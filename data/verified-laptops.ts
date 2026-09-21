@@ -47,7 +47,9 @@ export const verifiedLaptops: Laptop[] = [
         label: "M.2 SSD configuration",
 
         conditions: [
-          "System configured with an M.2 SSD",
+          "System is configured with an M.2 SSD.",
+          "The M.2 SSD may use the 2230 or 2280 form factor.",
+          "Exact SSD interface generation depends on the factory configuration.",
         ],
 
         memory: {
@@ -56,26 +58,29 @@ export const verifiedLaptops: Laptop[] = [
           formFactor: "SO-DIMM",
           slots: 2,
           maxTotalGb: 16,
+          supportedSpeedsMts: [2666, 3200],
 
           evidence: {
             sourceIds: [
               "dell-inspiron-15-3520-specs",
               "dell-inspiron-15-3520-service-manual",
+              "dell-inspiron-15-3520-product-page",
             ],
             notes:
-              "Dell documents two SODIMM slots, DDR4 memory, and a maximum supported memory configuration of 16 GB. Supported memory speed is 2666 MT/s for non-Type-C configurations and 3200 MT/s for Type-C configurations.",
+              "Dell documents two SODIMM slots and DDR4 memory with a maximum supported configuration of 16 GB. Memory speed is 2666 MT/s for non-Type-C configurations and 3200 MT/s for Type-C configurations.",
           },
         },
 
         storage: {
           status: "yes",
+          physicalSlots: 1,
 
-          slots: [
+          options: [
             {
-              formFactor: ["M.2 2230", "M.2 2280"],
+              formFactor: "M.2 2230",
               interface: "PCIe NVMe",
-              generation: "Gen 3 x4 or Gen 4 x4 depending on factory configuration",
-              maxCapacityGb: 2000,
+              generation: "PCIe Gen3 x4",
+              maxCapacityGb: 1000,
               replaceable: "yes",
 
               evidence: {
@@ -84,7 +89,53 @@ export const verifiedLaptops: Laptop[] = [
                   "dell-inspiron-15-3520-product-page",
                 ],
                 notes:
-                  "Dell documents one M.2 2230/2280 SSD slot. Factory SSD configurations include M.2 2230 PCIe NVMe drives up to 1 TB and M.2 2280 PCIe NVMe drives up to 2 TB.",
+                  "Dell lists M.2 2230 PCIe NVMe Gen3 x4 SSD configurations up to 1 TB.",
+              },
+            },
+            {
+              formFactor: "M.2 2230",
+              interface: "PCIe NVMe",
+              generation: "PCIe Gen4 x4",
+              maxCapacityGb: 1000,
+              replaceable: "yes",
+
+              evidence: {
+                sourceIds: [
+                  "dell-inspiron-15-3520-specs",
+                  "dell-inspiron-15-3520-product-page",
+                ],
+                notes:
+                  "Dell lists M.2 2230 PCIe NVMe Gen4 x4 SSD configurations up to 1 TB.",
+              },
+            },
+            {
+              formFactor: "M.2 2280",
+              interface: "PCIe NVMe",
+              generation: "PCIe Gen3 x4",
+              maxCapacityGb: 1000,
+              replaceable: "yes",
+
+              evidence: {
+                sourceIds: [
+                  "dell-inspiron-15-3520-product-page",
+                ],
+                notes:
+                  "Dell lists M.2 2280 PCIe NVMe Gen3 x4 QLC SSD configurations up to 1 TB.",
+              },
+            },
+            {
+              formFactor: "M.2 2280",
+              interface: "PCIe NVMe",
+              generation: "PCIe Gen4 x4",
+              maxCapacityGb: 2000,
+              replaceable: "yes",
+
+              evidence: {
+                sourceIds: [
+                  "dell-inspiron-15-3520-product-page",
+                ],
+                notes:
+                  "Dell lists M.2 2280 PCIe NVMe Gen4 x4 SSD configurations up to 2 TB.",
               },
             },
           ],
@@ -96,7 +147,7 @@ export const verifiedLaptops: Laptop[] = [
               "dell-inspiron-15-3520-product-page",
             ],
             notes:
-              "This configuration represents systems shipped with an M.2 SSD rather than the alternative 2.5-inch HDD configuration.",
+              "The M.2 configuration uses one M.2 storage slot. Dell documents multiple factory SSD combinations using M.2 2230 or M.2 2280.",
           },
         },
 
@@ -107,9 +158,10 @@ export const verifiedLaptops: Laptop[] = [
           evidence: {
             sourceIds: [
               "dell-inspiron-15-3520-service-manual",
+              "dell-inspiron-15-3520-specs",
             ],
             notes:
-              "Dell service documentation provides removal and installation procedures for the applicable 3-cell and 4-cell battery.",
+              "Dell documents removable service procedures for the applicable 3-cell and 4-cell battery variants. Battery capacity varies by configuration.",
           },
         },
 
@@ -128,8 +180,8 @@ export const verifiedLaptops: Laptop[] = [
         label: "2.5-inch SATA HDD configuration",
 
         conditions: [
-          "System configured with a 2.5-inch SATA HDD",
-          "4-cell battery configuration does not support the 2.5-inch HDD layout",
+          "System is configured with a 2.5-inch SATA hard drive.",
+          "Dell notes that systems with a 4-cell battery configuration do not support the hard-drive configuration.",
         ],
 
         memory: {
@@ -138,26 +190,28 @@ export const verifiedLaptops: Laptop[] = [
           formFactor: "SO-DIMM",
           slots: 2,
           maxTotalGb: 16,
+          supportedSpeedsMts: [2666, 3200],
 
           evidence: {
             sourceIds: [
               "dell-inspiron-15-3520-specs",
               "dell-inspiron-15-3520-service-manual",
+              "dell-inspiron-15-3520-product-page",
             ],
             notes:
-              "Dell documents two SODIMM slots, DDR4 memory, and a maximum supported memory configuration of 16 GB.",
+              "Dell documents two SODIMM slots and DDR4 memory with a maximum supported configuration of 16 GB. Memory speed is 2666 MT/s for non-Type-C configurations and 3200 MT/s for Type-C configurations.",
           },
         },
 
         storage: {
           status: "yes",
+          physicalSlots: 1,
 
-          slots: [
+          options: [
             {
-              formFactor: ["2.5-inch"],
+              formFactor: "2.5-inch",
               interface: "SATA",
               generation: "SATA",
-
               maxCapacityGb: 2000,
               replaceable: "yes",
 
@@ -167,7 +221,7 @@ export const verifiedLaptops: Laptop[] = [
                   "dell-inspiron-15-3520-service-manual",
                 ],
                 notes:
-                  "Dell documents 2.5-inch 5400 RPM SATA HDD factory configurations up to 2 TB and provides a service procedure for the hard-drive assembly.",
+                  "Dell lists 2.5-inch 5400 RPM SATA HDD configurations with capacities up to 2 TB.",
               },
             },
           ],
@@ -178,7 +232,7 @@ export const verifiedLaptops: Laptop[] = [
               "dell-inspiron-15-3520-service-manual",
             ],
             notes:
-              "This is an alternative factory storage layout to the M.2 SSD configuration. Dell notes that systems with a 4-cell battery do not support the 2.5-inch HDD configuration.",
+              "This is an alternative factory storage configuration to the M.2 SSD layout.",
           },
         },
 
@@ -189,9 +243,10 @@ export const verifiedLaptops: Laptop[] = [
           evidence: {
             sourceIds: [
               "dell-inspiron-15-3520-service-manual",
+              "dell-inspiron-15-3520-specs",
             ],
             notes:
-              "Dell service documentation provides removal and installation procedures for the applicable battery variants.",
+              "Dell documents removable service procedures for the applicable battery variants.",
           },
         },
 
