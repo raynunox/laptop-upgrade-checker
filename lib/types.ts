@@ -83,6 +83,10 @@ export type BatterySpec = {
 export type LaptopConfiguration = {
   id: string;
 
+  label: string;
+
+  conditions?: string[];
+
   cpu?: string;
   gpu?: string;
 
