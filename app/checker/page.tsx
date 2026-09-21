@@ -93,17 +93,38 @@ export default function CheckerPage() {
             <div className="mt-6 space-y-4">
               <div>
                 <strong>RAM</strong>
-                <p>Upgrade status: {String(result.ram.upgradeable)}</p>
+                <p>
+                  Upgrade status:{" "}
+                  {result.ram.upgradeable === true
+                    ? "✅ Upgradeable"
+                    : result.ram.upgradeable === false
+                    ? "❌ Not Upgradeable"
+                    : "⚠️ Unknown"}
+                </p>
               </div>
 
               <div>
                 <strong>Storage</strong>
-                <p>Upgrade status: {String(result.storage.upgradeable)}</p>
+                <p>
+                  Upgrade status:{" "}
+                  {result.storage.upgradeable === true
+                    ? "✅ Upgradeable"
+                    : result.storage.upgradeable === false
+                    ? "❌ Not Upgradeable"
+                    : "⚠️ Unknown"}
+                </p>
               </div>
 
               <div>
                 <strong>Battery</strong>
-                <p>Replaceable: {String(result.battery.replaceable)}</p>
+                <p>
+                  Replaceable:{" "}
+                  {result.battery.replaceable === true
+                    ? "✅ Yes"
+                    : result.battery.replaceable === false
+                    ? "❌ No"
+                    : "⚠️ Unknown"}
+                </p>
               </div>
             </div>
           </div>
