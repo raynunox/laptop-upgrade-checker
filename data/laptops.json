@@ -1,0 +1,24 @@
+[
+  {
+    "id": "dell-inspiron-15-3520",
+    "brand": "Dell",
+    "model": "Inspiron 15 3520",
+    "year": 2022,
+    "ram": {
+      "upgradeable": null,
+      "max_gb": null,
+      "slots": null,
+      "type": null
+    },
+    "storage": {
+      "upgradeable": null,
+      "type": null,
+      "interface": null,
+      "max_gb": null
+    },
+    "battery": {
+      "replaceable": null
+    },
+    "sources": []
+  }
+]
