@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { verifiedLaptops } from "../../data/verified-laptops";
 
 export default function CheckerPage() {
@@ -9,25 +9,34 @@ export default function CheckerPage() {
   const [result, setResult] = useState<
     (typeof verifiedLaptops)[number] | null
   >(null);
-  const [notFound, setNotFound] = useState(false);
+
+  const brands = useMemo(() => {
+    return [...new Set(verifiedLaptops.map((laptop) => laptop.brand))].sort();
+  }, []);
+
+  const models = useMemo(() => {
+    if (!brand) return [];
+
+    return verifiedLaptops
+      .filter((laptop) => laptop.brand === brand)
+      .sort((a, b) => a.model.localeCompare(b.model));
+  }, [brand]);
+
+  function handleBrandChange(value: string) {
+    setBrand(value);
+    setModel("");
+    setResult(null);
+  }
 
   function handleCheck() {
     const found = verifiedLaptops.find(
       (laptop) =>
-        laptop.brand.toLowerCase() === brand.trim().toLowerCase() &&
-        laptop.model.toLowerCase() === model.trim().toLowerCase()
+        laptop.brand === brand &&
+        laptop.model === model
     );
 
-    if (found) {
-      setResult(found);
-      setNotFound(false);
-    } else {
-      setResult(null);
-      setNotFound(true);
-    }
+    setResult(found ?? null);
   }
-
-  const configuration = result?.configurations[0];
 
   return (
     <main className="min-h-screen p-8">
@@ -37,7 +46,7 @@ export default function CheckerPage() {
         </h1>
 
         <p className="mt-2 text-gray-600">
-          Check verified laptop upgrade compatibility.
+          Select your laptop to check upgrade compatibility.
         </p>
 
         <div className="mt-8 space-y-4">
@@ -46,12 +55,19 @@ export default function CheckerPage() {
               Brand
             </label>
 
-            <input
+            <select
               value={brand}
-              onChange={(e) => setBrand(e.target.value)}
-              placeholder="e.g. Dell"
+              onChange={(e) => handleBrandChange(e.target.value)}
               className="w-full rounded-lg border p-3"
-            />
+            >
+              <option value="">Select brand</option>
+
+              {brands.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
@@ -59,180 +75,62 @@ export default function CheckerPage() {
               Model
             </label>
 
-            <input
+            <select
               value={model}
-              onChange={(e) => setModel(e.target.value)}
-              placeholder="e.g. Inspiron 15 3520"
-              className="w-full rounded-lg border p-3"
-            />
+              onChange={(e) => {
+                setModel(e.target.value);
+                setResult(null);
+              }}
+              disabled={!brand}
+              className="w-full rounded-lg border p-3 disabled:bg-gray-100"
+            >
+              <option value="">
+                {brand ? "Select model" : "Select brand first"}
+              </option>
+
+              {models.map((item) => (
+                <option key={item.id} value={item.model}>
+                  {item.model}
+                </option>
+              ))}
+            </select>
           </div>
 
           <button
             type="button"
             onClick={handleCheck}
-            className="rounded-lg bg-black px-6 py-3 text-white"
+            disabled={!brand || !model}
+            className="rounded-lg bg-black px-6 py-3 text-white disabled:cursor-not-allowed disabled:opacity-40"
           >
             Check Compatibility
           </button>
         </div>
 
-        {notFound && (
-          <div className="mt-8 rounded-lg border p-4">
-            <p className="font-medium">
-              This laptop is not yet in our verified database.
-            </p>
+        {result && (
+          <div className="mt-8 space-y-6">
+            <div className="rounded-lg border p-6">
+              <p className="text-sm text-gray-500">
+                {result.brand} {result.family}
+              </p>
 
-            <p className="mt-2 text-gray-600">
-              We are continuously adding verified models.
-            </p>
+              <h2 className="text-2xl font-bold">
+                {result.model}
+              </h2>
+
+              <p className="mt-2 text-sm text-gray-500">
+                Verification: {result.verificationStatus}
+              </p>
+
+              <p className="mt-1 text-sm text-gray-500">
+                Last verified: {result.lastVerifiedAt ?? "Unknown"}
+              </p>
+            </div>
           </div>
         )}
 
-        {result && configuration && (
-          <div className="mt-8 space-y-6">
-            <div className="rounded-lg border p-6">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-sm text-gray-500">
-                    {result.brand} {result.family}
-                  </p>
-
-                  <h2 className="text-2xl font-bold">
-                    {result.model}
-                  </h2>
-                </div>
-
-                <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800">
-                  Verified
-                </span>
-              </div>
-
-              <p className="mt-3 text-sm text-gray-500">
-                Last verified: {result.lastVerifiedAt}
-              </p>
-            </div>
-
-            <div className="rounded-lg border p-6">
-              <h3 className="text-xl font-semibold">
-                RAM
-              </h3>
-
-              <div className="mt-4 space-y-2 text-gray-700">
-                <p>
-                  Status:{" "}
-                  {configuration.memory.status === "yes"
-                    ? "✅ Upgradeable"
-                    : configuration.memory.status === "no"
-                    ? "❌ Not upgradeable"
-                    : configuration.memory.status === "conditional"
-                    ? "⚠️ Conditional"
-                    : "❓ Unknown"}
-                </p>
-
-                <p>
-                  Type: {configuration.memory.type ?? "Unknown"}
-                </p>
-
-                <p>
-                  Form factor:{" "}
-                  {configuration.memory.formFactor ?? "Unknown"}
-                </p>
-
-                <p>
-                  Slots:{" "}
-                  {configuration.memory.slots ?? "Unknown"}
-                </p>
-
-                <p>
-                  Maximum:{" "}
-                  {configuration.memory.maxTotalGb
-                    ? `${configuration.memory.maxTotalGb} GB`
-                    : "Unknown"}
-                </p>
-
-                {configuration.memory.maxSpeedMhz && (
-                  <p>
-                    Maximum speed:{" "}
-                    {configuration.memory.maxSpeedMhz} MHz
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div className="rounded-lg border p-6">
-              <h3 className="text-xl font-semibold">
-                Storage
-              </h3>
-
-              <div className="mt-4 space-y-2 text-gray-700">
-                <p>
-                  Status:{" "}
-                  {configuration.storage.status === "yes"
-                    ? "✅ Upgradeable"
-                    : configuration.storage.status === "no"
-                    ? "❌ Not upgradeable"
-                    : configuration.storage.status === "conditional"
-                    ? "⚠️ Conditional"
-                    : "❓ Unknown"}
-                </p>
-
-                <p>
-                  Documented slots:{" "}
-                  {configuration.storage.slots.length}
-                </p>
-
-                <p>
-                  Details:{" "}
-                  {configuration.storage.evidence.notes ??
-                    "See source documentation."}
-                </p>
-              </div>
-            </div>
-
-            <div className="rounded-lg border p-6">
-              <h3 className="text-xl font-semibold">
-                Battery
-              </h3>
-
-              <div className="mt-4 space-y-2 text-gray-700">
-                <p>
-                  Status:{" "}
-                  {configuration.battery.status === "yes"
-                    ? "✅ Replaceable"
-                    : configuration.battery.status === "no"
-                    ? "❌ Not replaceable"
-                    : configuration.battery.status ===
-                      "conditional"
-                    ? "⚠️ Conditional"
-                    : "❓ Unknown"}
-                </p>
-              </div>
-            </div>
-
-            <div className="rounded-lg border bg-gray-50 p-6">
-              <h3 className="text-lg font-semibold">
-                Sources
-              </h3>
-
-              <div className="mt-4 space-y-3">
-                {result.sources.map((source) => (
-                  <div key={source.id}>
-                    <a
-                      href={source.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-medium underline"
-                    >
-                      {source.title}
-                    </a>
-
-                    <p className="text-sm text-gray-500">
-                      {source.publisher} · {source.type}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
+        {brand && models.length === 0 && (
+          <div className="mt-8 rounded-lg border p-4">
+            No models are currently available for this brand.
           </div>
         )}
       </div>
