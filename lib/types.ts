@@ -43,13 +43,14 @@ export type MemorySpec = {
 
   maxTotalGb?: number;
   maxPerSlotGb?: number;
-  maxSpeedMhz?: number;
+
+  supportedSpeedsMts?: number[];
 
   evidence: Evidence;
 };
 
 export type StorageSlot = {
-  formFactor: string[];
+  formFactor: string;
   interface: string;
   generation?: string;
 
