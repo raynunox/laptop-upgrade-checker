@@ -49,7 +49,7 @@ export type MemorySpec = {
   evidence: Evidence;
 };
 
-export type StorageSlot = {
+export type StorageOption = {
   formFactor: string;
   interface: string;
   generation?: string;
@@ -64,7 +64,9 @@ export type StorageSlot = {
 export type StorageSpec = {
   status: CompatibilityStatus;
 
-  slots: StorageSlot[];
+  physicalSlots: number;
+
+  options: StorageOption[];
 
   evidence: Evidence;
 };
