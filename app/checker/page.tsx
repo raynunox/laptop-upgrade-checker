@@ -3,13 +3,14 @@
 import { useMemo, useState } from "react";
 import { verifiedLaptops } from "../../data/verified-laptops";
 
+type Laptop = (typeof verifiedLaptops)[number];
+type Configuration = Laptop["configurations"][number];
+
 export default function CheckerPage() {
   const [brand, setBrand] = useState("");
   const [model, setModel] = useState("");
   const [configurationId, setConfigurationId] = useState("");
-  const [result, setResult] = useState<
-    (typeof verifiedLaptops)[number] | null
-  >(null);
+  const [result, setResult] = useState<Laptop | null>(null);
 
   const brands = useMemo(() => {
     return [...new Set(verifiedLaptops.map((laptop) => laptop.brand))].sort();
@@ -33,12 +34,16 @@ export default function CheckerPage() {
 
   const configurations = selectedLaptop?.configurations ?? [];
 
-  const selectedConfiguration = useMemo(() => {
-    return configurations.find(
-      (configuration) =>
-        configuration.id === configurationId
+  const selectedConfiguration = useMemo<Configuration | null>(() => {
+    if (!selectedLaptop) return null;
+
+    return (
+      selectedLaptop.configurations.find(
+        (configuration) =>
+          configuration.id === configurationId
+      ) ?? null
     );
-  }, [configurations, configurationId]);
+  }, [selectedLaptop, configurationId]);
 
   function handleBrandChange(value: string) {
     setBrand(value);
@@ -53,6 +58,11 @@ export default function CheckerPage() {
     setResult(null);
   }
 
+  function handleConfigurationChange(value: string) {
+    setConfigurationId(value);
+    setResult(null);
+  }
+
   function handleCheck() {
     if (!selectedLaptop) {
       setResult(null);
@@ -60,7 +70,7 @@ export default function CheckerPage() {
     }
 
     if (
-      selectedLaptop.configurations.length > 1 &&
+      configurations.length > 1 &&
       !configurationId
     ) {
       return;
@@ -69,321 +79,510 @@ export default function CheckerPage() {
     setResult(selectedLaptop);
   }
 
+  function getCompatibilityLabel(
+    status: string
+  ) {
+    switch (status) {
+      case "yes":
+        return "✅ Upgradeable";
+      case "no":
+        return "❌ Not upgradeable";
+      case "conditional":
+        return "⚠️ Conditional";
+      default:
+        return "❓ Unknown";
+    }
+  }
+
+  function getVerificationLabel(
+    status: Laptop["verificationStatus"]
+  ) {
+    switch (status) {
+      case "verified":
+        return "✅ Verified";
+      case "partially_verified":
+        return "⚠️ Partially Verified";
+      case "needs_review":
+        return "🔎 Needs Review";
+      default:
+        return "📝 Draft";
+    }
+  }
+
   return (
-    <main className="min-h-screen p-8">
-      <div className="mx-auto max-w-2xl">
-        <h1 className="text-3xl font-bold">
-          Can I Upgrade My Laptop?
-        </h1>
+    <main className="min-h-screen bg-white p-8">
+      <div className="mx-auto max-w-3xl">
+        {/* HEADER */}
+        <div>
+          <p className="text-sm font-medium text-gray-500">
+            LAPTOP UPGRADE CHECKER
+          </p>
 
-        <p className="mt-2 text-gray-600">
-          Select your laptop and configuration to check upgrade compatibility.
-        </p>
+          <h1 className="mt-2 text-3xl font-bold tracking-tight">
+            Can I Upgrade My Laptop?
+          </h1>
 
-        <div className="mt-8 space-y-4">
-          {/* BRAND */}
-          <div>
-            <label className="mb-2 block font-medium">
-              Brand
-            </label>
+          <p className="mt-2 text-gray-600">
+            Select your laptop and factory configuration
+            to check upgrade compatibility.
+          </p>
+        </div>
 
-            <select
-              value={brand}
-              onChange={(e) => handleBrandChange(e.target.value)}
-              className="w-full rounded-lg border p-3"
-            >
-              <option value="">
-                Select brand
-              </option>
-
-              {brands.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* MODEL */}
-          <div>
-            <label className="mb-2 block font-medium">
-              Model
-            </label>
-
-            <select
-              value={model}
-              onChange={(e) => handleModelChange(e.target.value)}
-              disabled={!brand}
-              className="w-full rounded-lg border p-3 disabled:bg-gray-100"
-            >
-              <option value="">
-                {brand
-                  ? "Select model"
-                  : "Select brand first"}
-              </option>
-
-              {models.map((item) => (
-                <option key={item.id} value={item.model}>
-                  {item.model}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* CONFIGURATION */}
-          {selectedLaptop && configurations.length > 0 && (
+        {/* CHECKER FORM */}
+        <div className="mt-8 rounded-2xl border bg-white p-6 shadow-sm">
+          <div className="space-y-5">
+            {/* BRAND */}
             <div>
-              <label className="mb-2 block font-medium">
-                Configuration
+              <label className="mb-2 block text-sm font-semibold">
+                Brand
               </label>
 
               <select
-                value={configurationId}
-                onChange={(e) => {
-                  setConfigurationId(e.target.value);
-                  setResult(null);
-                }}
-                className="w-full rounded-lg border p-3"
+                value={brand}
+                onChange={(e) =>
+                  handleBrandChange(e.target.value)
+                }
+                className="w-full rounded-xl border p-3 outline-none focus:border-black"
               >
                 <option value="">
-                  Select configuration
+                  Select brand
                 </option>
 
-                {configurations.map((configuration) => (
+                {brands.map((item) => (
                   <option
-                    key={configuration.id}
-                    value={configuration.id}
+                    key={item}
+                    value={item}
                   >
-                    {configuration.label}
+                    {item}
                   </option>
                 ))}
               </select>
-
-              {selectedConfiguration?.conditions &&
-                selectedConfiguration.conditions.length > 0 && (
-                  <div className="mt-3 rounded-lg bg-gray-50 p-4 text-sm text-gray-600">
-                    <p className="font-medium text-gray-800">
-                      Configuration notes
-                    </p>
-
-                    <ul className="mt-2 list-disc space-y-1 pl-5">
-                      {selectedConfiguration.conditions.map(
-                        (condition) => (
-                          <li key={condition}>
-                            {condition}
-                          </li>
-                        )
-                      )}
-                    </ul>
-                  </div>
-                )}
             </div>
-          )}
 
-          {/* BUTTON */}
-          <button
-            type="button"
-            onClick={handleCheck}
-            disabled={
-              !brand ||
-              !model ||
-              (configurations.length > 1 &&
-                !configurationId)
-            }
-            className="rounded-lg bg-black px-6 py-3 text-white disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            Check Compatibility
-          </button>
+            {/* MODEL */}
+            <div>
+              <label className="mb-2 block text-sm font-semibold">
+                Model
+              </label>
+
+              <select
+                value={model}
+                onChange={(e) =>
+                  handleModelChange(e.target.value)
+                }
+                disabled={!brand}
+                className="w-full rounded-xl border p-3 outline-none focus:border-black disabled:bg-gray-100"
+              >
+                <option value="">
+                  {brand
+                    ? "Select model"
+                    : "Select brand first"}
+                </option>
+
+                {models.map((item) => (
+                  <option
+                    key={item.id}
+                    value={item.model}
+                  >
+                    {item.model}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* CONFIGURATION */}
+            {selectedLaptop &&
+              configurations.length > 0 && (
+                <div>
+                  <label className="mb-2 block text-sm font-semibold">
+                    Factory Configuration
+                  </label>
+
+                  <select
+                    value={configurationId}
+                    onChange={(e) =>
+                      handleConfigurationChange(
+                        e.target.value
+                      )
+                    }
+                    className="w-full rounded-xl border p-3 outline-none focus:border-black"
+                  >
+                    <option value="">
+                      Select configuration
+                    </option>
+
+                    {configurations.map(
+                      (configuration) => (
+                        <option
+                          key={configuration.id}
+                          value={configuration.id}
+                        >
+                          {configuration.label}
+                        </option>
+                      )
+                    )}
+                  </select>
+
+                  {selectedConfiguration?.conditions &&
+                    selectedConfiguration.conditions.length >
+                      0 && (
+                      <div className="mt-3 rounded-xl bg-gray-50 p-4 text-sm text-gray-600">
+                        <p className="font-semibold text-gray-900">
+                          Configuration notes
+                        </p>
+
+                        <ul className="mt-2 list-disc space-y-1 pl-5">
+                          {selectedConfiguration.conditions.map(
+                            (condition) => (
+                              <li key={condition}>
+                                {condition}
+                              </li>
+                            )
+                          )}
+                        </ul>
+                      </div>
+                    )}
+                </div>
+              )}
+
+            {/* BUTTON */}
+            <button
+              type="button"
+              onClick={handleCheck}
+              disabled={
+                !brand ||
+                !model ||
+                (configurations.length > 1 &&
+                  !configurationId)
+              }
+              className="w-full rounded-xl bg-black px-6 py-3 font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Check Compatibility
+            </button>
+          </div>
         </div>
 
         {/* RESULT */}
         {result && selectedConfiguration && (
           <div className="mt-8 space-y-6">
-            {/* LAPTOP HEADER */}
-            <div className="rounded-lg border p-6">
-              <p className="text-sm text-gray-500">
-                {result.brand} {result.family}
-              </p>
+            {/* LAPTOP SUMMARY */}
+            <section className="rounded-2xl border p-6">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <p className="text-sm text-gray-500">
+                    {result.brand} {result.family}
+                  </p>
 
-              <h2 className="text-2xl font-bold">
-                {result.model}
-              </h2>
+                  <h2 className="mt-1 text-2xl font-bold">
+                    {result.model}
+                  </h2>
 
-              <p className="mt-2 text-sm text-gray-500">
-                Configuration:{" "}
-                {selectedConfiguration.label}
-              </p>
+                  <p className="mt-2 text-sm text-gray-600">
+                    Configuration:{" "}
+                    <span className="font-medium text-gray-900">
+                      {selectedConfiguration.label}
+                    </span>
+                  </p>
+                </div>
 
-              <p className="mt-2 text-sm text-gray-500">
-                Verification:{" "}
-                {result.verificationStatus}
-              </p>
+                <div className="rounded-full bg-gray-100 px-3 py-1 text-sm font-medium">
+                  {getVerificationLabel(
+                    result.verificationStatus
+                  )}
+                </div>
+              </div>
 
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-4 text-xs text-gray-500">
                 Last verified:{" "}
                 {result.lastVerifiedAt ?? "Unknown"}
               </p>
-            </div>
+            </section>
 
             {/* RAM */}
-            <div className="rounded-lg border p-6">
-              <h3 className="text-xl font-semibold">
-                RAM
-              </h3>
+            <section className="rounded-2xl border p-6">
+              <div className="flex items-center justify-between gap-4">
+                <h3 className="text-xl font-semibold">
+                  RAM
+                </h3>
 
-              <div className="mt-4 space-y-2 text-gray-700">
-                <p>
-                  Status:{" "}
-                  {selectedConfiguration.memory.status === "yes"
-                    ? "✅ Upgradeable"
-                    : selectedConfiguration.memory.status === "no"
-                    ? "❌ Not upgradeable"
-                    : selectedConfiguration.memory.status ===
-                      "conditional"
-                    ? "⚠️ Conditional"
-                    : "❓ Unknown"}
-                </p>
-
-                <p>
-                  Type:{" "}
-                  {selectedConfiguration.memory.type ?? "Unknown"}
-                </p>
-
-                <p>
-                  Form factor:{" "}
-                  {selectedConfiguration.memory.formFactor ??
-                    "Unknown"}
-                </p>
-
-                <p>
-                  Slots:{" "}
-                  {selectedConfiguration.memory.slots ??
-                    "Unknown"}
-                </p>
-
-                <p>
-                  Maximum:{" "}
-                  {selectedConfiguration.memory.maxTotalGb
-                    ? `${selectedConfiguration.memory.maxTotalGb} GB`
-                    : "Unknown"}
-                </p>
+                <span className="text-sm font-medium">
+                  {getCompatibilityLabel(
+                    selectedConfiguration.memory.status
+                  )}
+                </span>
               </div>
-            </div>
+
+              <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                <div>
+                  <p className="text-sm text-gray-500">
+                    Memory type
+                  </p>
+
+                  <p className="mt-1 font-medium">
+                    {selectedConfiguration.memory.type ??
+                      "Unknown"}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-sm text-gray-500">
+                    Form factor
+                  </p>
+
+                  <p className="mt-1 font-medium">
+                    {selectedConfiguration.memory.formFactor ??
+                      "Unknown"}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-sm text-gray-500">
+                    Slots
+                  </p>
+
+                  <p className="mt-1 font-medium">
+                    {selectedConfiguration.memory.slots ??
+                      "Unknown"}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-sm text-gray-500">
+                    Maximum total memory
+                  </p>
+
+                  <p className="mt-1 font-medium">
+                    {selectedConfiguration.memory.maxTotalGb
+                      ? `${selectedConfiguration.memory.maxTotalGb} GB`
+                      : "Unknown"}
+                  </p>
+                </div>
+
+                <div className="sm:col-span-2">
+                  <p className="text-sm text-gray-500">
+                    Supported memory speeds
+                  </p>
+
+                  <p className="mt-1 font-medium">
+                    {selectedConfiguration.memory
+                      .supportedSpeedsMts?.length
+                      ? selectedConfiguration.memory.supportedSpeedsMts
+                          .map(
+                            (speed) =>
+                              `${speed} MT/s`
+                          )
+                          .join(" / ")
+                      : "Unknown"}
+                  </p>
+                </div>
+              </div>
+            </section>
 
             {/* STORAGE */}
-            <div className="rounded-lg border p-6">
-              <h3 className="text-xl font-semibold">
-                Storage
-              </h3>
+            <section className="rounded-2xl border p-6">
+              <div className="flex items-center justify-between gap-4">
+                <h3 className="text-xl font-semibold">
+                  Storage
+                </h3>
 
-              <div className="mt-4 space-y-3 text-gray-700">
-                <p>
-                  Status:{" "}
-                  {selectedConfiguration.storage.status === "yes"
-                    ? "✅ Upgradeable"
-                    : selectedConfiguration.storage.status === "no"
-                    ? "❌ Not upgradeable"
-                    : selectedConfiguration.storage.status ===
-                      "conditional"
-                    ? "⚠️ Conditional"
-                    : "❓ Unknown"}
+                <span className="text-sm font-medium">
+                  {getCompatibilityLabel(
+                    selectedConfiguration.storage.status
+                  )}
+                </span>
+              </div>
+
+              <div className="mt-4">
+                <p className="text-sm text-gray-500">
+                  Physical storage slots
                 </p>
 
-                {selectedConfiguration.storage.slots.length >
-                  0 && (
-                  <div>
-                    <p className="font-medium">
-                      Supported storage:
-                    </p>
+                <p className="mt-1 font-medium">
+                  {selectedConfiguration.storage
+                    .physicalSlots}
+                </p>
+              </div>
 
-                    <div className="mt-2 space-y-2">
-                      {selectedConfiguration.storage.slots.map(
-                        (slot, index) => (
-                          <div
-                            key={`${slot.interface}-${index}`}
-                            className="rounded-lg bg-gray-50 p-3"
-                          >
-                            <p>
-                              <strong>Form factor:</strong>{" "}
-                              {slot.formFactor.join(", ")}
+              {selectedConfiguration.storage.options
+                .length > 0 && (
+                <div className="mt-6">
+                  <p className="text-sm font-semibold">
+                    Supported storage options
+                  </p>
+
+                  <div className="mt-3 space-y-3">
+                    {selectedConfiguration.storage.options.map(
+                      (option, index) => (
+                        <div
+                          key={`${option.formFactor}-${option.interface}-${index}`}
+                          className="rounded-xl bg-gray-50 p-4"
+                        >
+                          <div className="grid gap-3 sm:grid-cols-2">
+                            <div>
+                              <p className="text-sm text-gray-500">
+                                Form factor
+                              </p>
+
+                              <p className="mt-1 font-medium">
+                                {option.formFactor}
+                              </p>
+                            </div>
+
+                            <div>
+                              <p className="text-sm text-gray-500">
+                                Interface
+                              </p>
+
+                              <p className="mt-1 font-medium">
+                                {option.interface}
+                              </p>
+                            </div>
+
+                            <div>
+                              <p className="text-sm text-gray-500">
+                                Generation
+                              </p>
+
+                              <p className="mt-1 font-medium">
+                                {option.generation ??
+                                  "Unknown"}
+                              </p>
+                            </div>
+
+                            <div>
+                              <p className="text-sm text-gray-500">
+                                Documented maximum
+                              </p>
+
+                              <p className="mt-1 font-medium">
+                                {option.maxCapacityGb
+                                  ? `${option.maxCapacityGb} GB`
+                                  : "Unknown"}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="mt-3 border-t pt-3">
+                            <p className="text-sm text-gray-500">
+                              Replaceable
                             </p>
 
-                            <p>
-                              <strong>Interface:</strong>{" "}
-                              {slot.interface}
-                            </p>
-
-                            {slot.generation && (
-                              <p>
-                                <strong>Generation:</strong>{" "}
-                                {slot.generation}
-                              </p>
-                            )}
-
-                            {slot.maxCapacityGb && (
-                              <p>
-                                <strong>Documented maximum:</strong>{" "}
-                                {slot.maxCapacityGb} GB
-                              </p>
-                            )}
-
-                            <p>
-                              <strong>Replaceable:</strong>{" "}
-                              {slot.replaceable === "yes"
+                            <p className="mt-1 font-medium">
+                              {option.replaceable ===
+                              "yes"
                                 ? "✅ Yes"
-                                : slot.replaceable === "no"
+                                : option.replaceable ===
+                                  "no"
                                 ? "❌ No"
-                                : slot.replaceable ===
+                                : option.replaceable ===
                                   "conditional"
                                 ? "⚠️ Conditional"
                                 : "❓ Unknown"}
                             </p>
                           </div>
-                        )
-                      )}
-                    </div>
+                        </div>
+                      )
+                    )}
                   </div>
-                )}
+                </div>
+              )}
 
-                <p className="text-sm text-gray-600">
-                  {selectedConfiguration.storage.evidence
-                    .notes ??
-                    "See source documentation for details."}
-                </p>
-              </div>
-            </div>
+              {selectedConfiguration.storage.evidence
+                .notes && (
+                <div className="mt-5 rounded-xl border-l-4 border-gray-300 bg-gray-50 p-4 text-sm text-gray-600">
+                  {
+                    selectedConfiguration.storage
+                      .evidence.notes
+                  }
+                </div>
+              )}
+            </section>
 
             {/* BATTERY */}
-            <div className="rounded-lg border p-6">
-              <h3 className="text-xl font-semibold">
-                Battery
-              </h3>
+            <section className="rounded-2xl border p-6">
+              <div className="flex items-center justify-between gap-4">
+                <h3 className="text-xl font-semibold">
+                  Battery
+                </h3>
 
-              <div className="mt-4 text-gray-700">
-                <p>
-                  Status:{" "}
-                  {selectedConfiguration.battery.status === "yes"
+                <span className="text-sm font-medium">
+                  {selectedConfiguration.battery.status ===
+                  "yes"
                     ? "✅ Replaceable"
-                    : selectedConfiguration.battery.status ===
-                      "no"
+                    : selectedConfiguration.battery
+                        .status === "no"
                     ? "❌ Not replaceable"
-                    : selectedConfiguration.battery.status ===
-                      "conditional"
+                    : selectedConfiguration.battery
+                        .status === "conditional"
                     ? "⚠️ Conditional"
                     : "❓ Unknown"}
-                </p>
+                </span>
               </div>
-            </div>
+
+              <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                <div>
+                  <p className="text-sm text-gray-500">
+                    Removable
+                  </p>
+
+                  <p className="mt-1 font-medium">
+                    {selectedConfiguration.battery
+                      .removable === true
+                      ? "Yes"
+                      : selectedConfiguration.battery
+                          .removable === false
+                      ? "No"
+                      : "Unknown"}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-sm text-gray-500">
+                    Replaceable
+                  </p>
+
+                  <p className="mt-1 font-medium">
+                    {selectedConfiguration.battery
+                      .replaceable === true
+                      ? "Yes"
+                      : selectedConfiguration.battery
+                          .replaceable === false
+                      ? "No"
+                      : "Unknown"}
+                  </p>
+                </div>
+
+                {selectedConfiguration.battery
+                  .capacityWh && (
+                  <div>
+                    <p className="text-sm text-gray-500">
+                      Capacity
+                    </p>
+
+                    <p className="mt-1 font-medium">
+                      {
+                        selectedConfiguration.battery
+                          .capacityWh
+                      }{" "}
+                      Wh
+                    </p>
+                  </div>
+                )}
+              </div>
+            </section>
 
             {/* SOURCES */}
-            <div className="rounded-lg border p-6">
-              <h3 className="text-lg font-semibold">
+            <section className="rounded-2xl border p-6">
+              <h3 className="text-xl font-semibold">
                 Sources
               </h3>
 
-              <div className="mt-4 space-y-3">
+              <div className="mt-5 space-y-4">
                 {result.sources.map((source) => (
-                  <div key={source.id}>
+                  <div
+                    key={source.id}
+                    className="rounded-xl bg-gray-50 p-4"
+                  >
                     <a
                       href={source.url}
                       target="_blank"
@@ -393,13 +592,18 @@ export default function CheckerPage() {
                       {source.title}
                     </a>
 
-                    <p className="text-sm text-gray-500">
-                      {source.publisher} · {source.type}
+                    <p className="mt-1 text-sm text-gray-500">
+                      {source.publisher} ·{" "}
+                      {source.type}
+                    </p>
+
+                    <p className="mt-1 text-xs text-gray-400">
+                      Accessed: {source.accessedAt}
                     </p>
                   </div>
                 ))}
               </div>
-            </div>
+            </section>
           </div>
         )}
       </div>
