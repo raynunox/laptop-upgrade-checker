@@ -5,20 +5,27 @@
     "model": "Inspiron 15 3520",
     "year": 2022,
     "ram": {
-      "upgradeable": null,
+      "upgradeable": true,
       "max_gb": null,
-      "slots": null,
-      "type": null
+      "slots": 2,
+      "type": "DDR4"
     },
     "storage": {
-      "upgradeable": null,
-      "type": null,
-      "interface": null,
+      "upgradeable": true,
+      "type": "M.2",
+      "interface": "NVMe",
       "max_gb": null
     },
     "battery": {
-      "replaceable": null
+      "replaceable": true
     },
-    "sources": []
+    "sources": [
+      {
+        "title": "Dell Inspiron 15 3520 Service Manual",
+        "url": "https://www.dell.com/support/manuals/en-us/inspiron-15-3520-laptop/inspiron_3520_sm/",
+        "type": "official_service_manual",
+        "verifiedAt": "2026-09-21"
+      }
+    ]
   }
 ]
