@@ -1,14 +1,11 @@
 /**
  * LAPTOP UPGRADE CHECKER - FIXED VERSION
  * 
- * Perubahan:
- * ✅ Fixed ramCapacities useMemo (CRITICAL BUG)
- * ✅ Fixed storageCapacities useMemo  
- * ✅ Added search functionality
- * ✅ Improved error handling
- * ✅ Added input validation
- * ✅ Better type safety
- * ✅ Added localStorage integration
+ * Perubahan UI:
+ * ✅ Modern Card-based layout
+ * ✅ Premium form inputs with focus rings
+ * ✅ Better visual hierarchy for steps
+ * ✅ Highlighted result sections
  */
 
 "use client";
@@ -144,7 +141,7 @@ export default function CheckerPage() {
   }, [selectedConfiguration, storageOptionId]);
 
   // ============================================================
-  // COMPUTED: RAM Capacities (✅ FIXED - Was broken!)
+  // COMPUTED: RAM Capacities
   // ============================================================
 
   const ramCapacities = useMemo(() => {
@@ -157,24 +154,19 @@ export default function CheckerPage() {
     const max = selectedConfiguration.memory.maxTotalGb;
     const onboard = selectedConfiguration.memory.onboardGb;
 
-    // ✅ Filter out capacities that don't meet constraints
     return common.filter((capacity) => {
-      // If some memory is soldered, requested capacity must be >= onboard
       if (onboard && capacity < onboard) {
         return false;
       }
-
-      // Requested capacity cannot exceed maximum
       if (max && capacity > max) {
         return false;
       }
-
       return true;
     });
   }, [selectedConfiguration]);
 
   // ============================================================
-  // COMPUTED: Storage Capacities (✅ FIXED - Was incomplete!)
+  // COMPUTED: Storage Capacities
   // ============================================================
 
   const storageCapacities = useMemo(() => {
@@ -186,12 +178,10 @@ export default function CheckerPage() {
 
     const max = selectedStorageOption.maxCapacityGb;
 
-    // ✅ Filter out capacities that exceed maximum
     return common.filter((capacity) => {
       if (max && capacity > max) {
         return false;
       }
-
       return true;
     });
   }, [selectedStorageOption]);
@@ -228,22 +218,9 @@ export default function CheckerPage() {
   }
 
   function handleCheck() {
-    // ✅ Validate inputs before checking
-    if (!selectedConfiguration) {
-      console.error("No configuration selected");
-      return;
-    }
-
-    if (checkType === "ram" && !ramCapacity) {
-      console.error("No RAM capacity selected");
-      return;
-    }
-
-    if (checkType === "storage" && (!storageOptionId || !storageCapacity)) {
-      console.error("No storage option or capacity selected");
-      return;
-    }
-
+    if (!selectedConfiguration) return;
+    if (checkType === "ram" && !ramCapacity) return;
+    if (checkType === "storage" && (!storageOptionId || !storageCapacity)) return;
     setHasChecked(true);
   }
 
@@ -251,7 +228,6 @@ export default function CheckerPage() {
   // COMPUTED: Check Results
   // ============================================================
 
-  // ✅ Validate ramCapacity is a number
   const ramCapacityNumber = ramCapacity ? parseInt(ramCapacity, 10) : null;
   
   const ramResult =
@@ -266,7 +242,6 @@ export default function CheckerPage() {
         )
       : null;
 
-  // ✅ Validate storageCapacity is a number
   const storageCapacityNumber = storageCapacity
     ? parseInt(storageCapacity, 10)
     : null;
@@ -290,65 +265,58 @@ export default function CheckerPage() {
   // ============================================================
 
   return (
-    <main className="min-h-screen bg-white p-8">
-      <div className="mx-auto max-w-3xl">
+    <main className="min-h-screen py-10 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-2xl space-y-8">
+        
         {/* HEADER */}
-        <div>
-          <p className="text-sm font-semibold tracking-wide text-gray-500">
-            LAPTOP UPGRADE CHECKER
+        <div className="text-center md:text-left">
+          <p className="text-xs font-bold tracking-widest text-blue-600 uppercase">
+            Compatibility Engine
           </p>
-
-          <h1 className="mt-2 text-3xl font-bold tracking-tight">
-            Can I Upgrade My Laptop?
+          <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+            Configure Your Upgrade
           </h1>
-
-          <p className="mt-2 text-gray-600">
-            Check whether a RAM or storage upgrade is compatible with your laptop.
+          <p className="mt-2 text-base text-gray-500">
+            Select your laptop model to check hardware upgrade compatibility limits.
           </p>
         </div>
 
-        {/* LAPTOP SELECTION */}
-        <section className="mt-8 rounded-2xl border p-6 shadow-sm">
-          <h2 className="text-lg font-semibold">
-            1. Select your laptop
-          </h2>
+        {/* LAPTOP SELECTION CARD */}
+        <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
+          <div className="flex items-center gap-3 mb-6">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-600">1</span>
+            <h2 className="text-xl font-bold text-gray-900">Device Selection</h2>
+          </div>
 
-          <div className="mt-5 space-y-5">
+          <div className="space-y-5">
             {/* BRAND */}
             <div>
-              <label className="mb-2 block text-sm font-semibold">
-                Brand
-              </label>
-
+              <label className="mb-1.5 block text-sm font-medium text-gray-700">Brand</label>
               <select
                 value={brand}
                 onChange={(e) => handleBrandChange(e.target.value)}
-                className="w-full rounded-xl border p-3"
+                className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               >
                 <option value="">Select brand</option>
-
                 {brands.map((item) => (
-                  <option key={item} value={item}>
-                    {item}
-                  </option>
+                  <option key={item} value={item}>{item}</option>
                 ))}
               </select>
             </div>
 
-            {/* MODEL - With Search */}
+            {/* MODEL */}
             <div>
-              <label className="mb-2 block text-sm font-semibold">
-                Model {models.length > 0 && <span className="text-gray-500">({models.length})</span>}
+              <label className="mb-1.5 block text-sm font-medium text-gray-700">
+                Model {models.length > 0 && <span className="text-gray-400 font-normal">({models.length} available)</span>}
               </label>
-
-              {/* ✅ Search input for better UX */}
+              
               {brand && (
                 <input
                   type="text"
-                  placeholder="Search model..."
+                  placeholder="Search specific model..."
                   value={modelSearch}
                   onChange={(e) => setModelSearch(e.target.value)}
-                  className="mb-2 w-full rounded-xl border p-3"
+                  className="mb-2 w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                 />
               )}
 
@@ -356,22 +324,16 @@ export default function CheckerPage() {
                 value={model}
                 onChange={(e) => handleModelChange(e.target.value)}
                 disabled={!brand}
-                className="w-full rounded-xl border p-3 disabled:bg-gray-100"
+                className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 transition-colors disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               >
-                <option value="">
-                  {brand ? "Select model" : "Select brand first"}
-                </option>
-
+                <option value="">{brand ? "Select your model" : "Select brand first"}</option>
                 {models.map((item) => (
-                  <option key={item.id} value={item.model}>
-                    {item.model}
-                  </option>
+                  <option key={item.id} value={item.model}>{item.model}</option>
                 ))}
               </select>
 
-              {/* Show "no results" message */}
               {brand && models.length === 0 && modelSearch && (
-                <p className="mt-2 text-sm text-gray-500">
+                <p className="mt-2 text-sm text-red-500">
                   No models found matching "{modelSearch}"
                 </p>
               )}
@@ -379,136 +341,104 @@ export default function CheckerPage() {
 
             {/* CONFIGURATION */}
             {selectedLaptop && configurations.length > 0 && (
-              <div>
-                <label className="mb-2 block text-sm font-semibold">
-                  Factory Configuration
-                </label>
-
+              <div className="pt-2">
+                <label className="mb-1.5 block text-sm font-medium text-gray-700">Factory Configuration</label>
                 <select
                   value={configurationId}
-                  onChange={(e) =>
-                    handleConfigurationChange(e.target.value)
-                  }
-                  className="w-full rounded-xl border p-3"
+                  onChange={(e) => handleConfigurationChange(e.target.value)}
+                  className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                 >
-                  <option value="">
-                    Select configuration
-                  </option>
-
+                  <option value="">Select configuration</option>
                   {configurations.map((config) => (
-                    <option
-                      key={config.id}
-                      value={config.id}
-                    >
-                      {config.label}
-                    </option>
+                    <option key={config.id} value={config.id}>{config.label}</option>
                   ))}
                 </select>
 
-                {/* Configuration notes */}
-                {selectedConfiguration?.conditions &&
-                  selectedConfiguration.conditions.length > 0 && (
-                    <div className="mt-3 rounded-xl bg-gray-50 p-4 text-sm text-gray-600">
-                      <p className="font-semibold text-gray-900">
-                        Configuration notes
-                      </p>
-
-                      <ul className="mt-2 list-disc space-y-1 pl-5">
-                        {selectedConfiguration.conditions.map(
-                          (condition) => (
-                            <li key={condition}>{condition}</li>
-                          )
-                        )}
-                      </ul>
-                    </div>
-                  )}
+                {selectedConfiguration?.conditions && selectedConfiguration.conditions.length > 0 && (
+                  <div className="mt-4 rounded-xl border border-yellow-200 bg-yellow-50 p-4">
+                    <p className="text-sm font-semibold text-yellow-800">Configuration Notes</p>
+                    <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-yellow-700">
+                      {selectedConfiguration.conditions.map((condition) => (
+                        <li key={condition}>{condition}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             )}
           </div>
         </section>
 
-        {/* COMPONENT */}
+        {/* COMPONENT SELECTION */}
         {selectedConfiguration && (
-          <section className="mt-6 rounded-2xl border p-6 shadow-sm">
-            <h2 className="text-lg font-semibold">
-              2. What do you want to upgrade?
-            </h2>
-
-            <div className="mt-5">
-              <select
-                value={checkType}
-                onChange={(e) => {
-                  setCheckType(e.target.value as CheckType | "");
-
-                  setRamCapacity("");
-                  setStorageOptionId("");
-                  setStorageCapacity("");
-                  setHasChecked(false);
-                }}
-                className="w-full rounded-xl border p-3"
-              >
-                <option value="">Select component</option>
-
-                <option value="ram">RAM</option>
-
-                <option value="storage">SSD / Storage</option>
-              </select>
+          <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-600">2</span>
+              <h2 className="text-xl font-bold text-gray-900">Upgrade Component</h2>
             </div>
+
+            <select
+              value={checkType}
+              onChange={(e) => {
+                setCheckType(e.target.value as CheckType | "");
+                setRamCapacity("");
+                setStorageOptionId("");
+                setStorageCapacity("");
+                setHasChecked(false);
+              }}
+              className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+            >
+              <option value="">What do you want to upgrade?</option>
+              <option value="ram">RAM / Memory</option>
+              <option value="storage">SSD / Storage</option>
+            </select>
           </section>
         )}
 
-        {/* RAM */}
+        {/* TARGET SPECS: RAM */}
         {selectedConfiguration && checkType === "ram" && (
-          <section className="mt-6 rounded-2xl border p-6 shadow-sm">
-            <h2 className="text-lg font-semibold">
-              3. Select target RAM
-            </h2>
+          <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8 animate-in fade-in duration-300">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-600">3</span>
+              <h2 className="text-xl font-bold text-gray-900">Target RAM</h2>
+            </div>
 
-            <div className="mt-5">
-              <label className="mb-2 block text-sm font-semibold">
-                Target capacity
-              </label>
-
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-gray-700">Desired Capacity</label>
               <select
                 value={ramCapacity}
                 onChange={(e) => {
                   setRamCapacity(e.target.value);
                   setHasChecked(false);
                 }}
-                className="w-full rounded-xl border p-3"
+                className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               >
                 <option value="">Select RAM capacity</option>
-
                 {ramCapacities.map((capacity) => (
-                  <option key={capacity} value={capacity}>
-                    {capacity} GB
-                  </option>
+                  <option key={capacity} value={capacity}>{capacity} GB</option>
                 ))}
               </select>
 
               {ramCapacities.length === 0 && (
-                <p className="mt-2 text-sm text-orange-600">
-                  ⚠️ No valid RAM capacities for this configuration
+                <p className="mt-3 text-sm text-orange-600 bg-orange-50 p-3 rounded-lg border border-orange-200">
+                  ⚠️ No valid RAM capacities for this configuration. Memory might be fully soldered.
                 </p>
               )}
             </div>
           </section>
         )}
 
-        {/* STORAGE */}
+        {/* TARGET SPECS: STORAGE */}
         {selectedConfiguration && checkType === "storage" && (
-          <section className="mt-6 rounded-2xl border p-6 shadow-sm">
-            <h2 className="text-lg font-semibold">
-              3. Select target storage
-            </h2>
+          <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8 animate-in fade-in duration-300">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-600">3</span>
+              <h2 className="text-xl font-bold text-gray-900">Target Storage</h2>
+            </div>
 
-            <div className="mt-5 space-y-5">
-              {/* STORAGE OPTION */}
+            <div className="space-y-5">
               <div>
-                <label className="mb-2 block text-sm font-semibold">
-                  Storage type
-                </label>
-
+                <label className="mb-1.5 block text-sm font-medium text-gray-700">Storage Type (Slot)</label>
                 <select
                   value={storageOptionId}
                   onChange={(e) => {
@@ -516,52 +446,39 @@ export default function CheckerPage() {
                     setStorageCapacity("");
                     setHasChecked(false);
                   }}
-                  className="w-full rounded-xl border p-3"
+                  className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                 >
-                  <option value="">Select storage option</option>
-
-                  {selectedConfiguration.storage.options.map(
-                    (option, index) => (
-                      <option
-                        key={`${option.formFactor}-${option.interface}-${index}`}
-                        value={`${option.formFactor}-${option.interface}-${index}`}
-                      >
-                        {option.formFactor} · {option.interface}
-                      </option>
-                    )
-                  )}
+                  <option value="">Select storage slot</option>
+                  {selectedConfiguration.storage.options.map((option, index) => (
+                    <option key={`${option.formFactor}-${option.interface}-${index}`} value={`${option.formFactor}-${option.interface}-${index}`}>
+                      {option.formFactor} · {option.interface}
+                    </option>
+                  ))}
                 </select>
               </div>
 
-              {/* CAPACITY */}
               {selectedStorageOption && (
                 <div>
-                  <label className="mb-2 block text-sm font-semibold">
-                    Target capacity
-                  </label>
-
+                  <label className="mb-1.5 block text-sm font-medium text-gray-700">Desired Capacity</label>
                   <select
                     value={storageCapacity}
                     onChange={(e) => {
                       setStorageCapacity(e.target.value);
                       setHasChecked(false);
                     }}
-                    className="w-full rounded-xl border p-3"
+                    className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                   >
                     <option value="">Select capacity</option>
-
                     {storageCapacities.map((capacity) => (
                       <option key={capacity} value={capacity}>
-                        {capacity >= 1000
-                          ? `${capacity / 1000} TB`
-                          : `${capacity} GB`}
+                        {capacity >= 1000 ? `${capacity / 1000} TB` : `${capacity} GB`}
                       </option>
                     ))}
                   </select>
 
                   {storageCapacities.length === 0 && (
-                    <p className="mt-2 text-sm text-orange-600">
-                      ⚠️ No valid storage capacities for this option
+                    <p className="mt-3 text-sm text-orange-600 bg-orange-50 p-3 rounded-lg border border-orange-200">
+                      ⚠️ No valid storage capacities for this option.
                     </p>
                   )}
                 </div>
@@ -572,85 +489,60 @@ export default function CheckerPage() {
 
         {/* CHECK BUTTON */}
         {selectedConfiguration &&
-          ((checkType === "ram" && ramCapacity) ||
-            (checkType === "storage" &&
-              storageOptionId &&
-              storageCapacity)) && (
+          ((checkType === "ram" && ramCapacity) || (checkType === "storage" && storageOptionId && storageCapacity)) && (
             <button
               type="button"
               onClick={handleCheck}
-              className="mt-6 w-full rounded-xl bg-black px-6 py-4 font-medium text-white transition hover:bg-gray-800"
+              className="w-full rounded-xl bg-gray-900 px-6 py-4 text-base font-semibold text-white shadow-md transition-all hover:bg-gray-800 hover:-translate-y-0.5 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 animate-in fade-in duration-300"
             >
               Check Compatibility
             </button>
-          )}
+        )}
 
-        {/* RAM RESULT */}
+        {/* RESULTS - RAM */}
         {ramResult && (
-          <section className="mt-6 rounded-2xl border p-6">
-            <p className="text-sm text-gray-500">
-              Compatibility result
-            </p>
-
-            <h2 className="mt-1 text-2xl font-bold">
-              {getStatusLabel(ramResult.status)}
-            </h2>
-
-            <p className="mt-3 font-medium">{ramResult.title}</p>
-
-            <p className="mt-2 text-gray-600">{ramResult.reason}</p>
+          <section className="overflow-hidden rounded-2xl bg-gray-900 text-white shadow-xl animate-in zoom-in-95 duration-300">
+            <div className="border-b border-gray-800 p-6 sm:p-8">
+              <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">Analysis Result</p>
+              <h2 className="mt-2 text-3xl font-extrabold">{getStatusLabel(ramResult.status)}</h2>
+              <p className="mt-4 text-lg font-medium text-gray-100">{ramResult.title}</p>
+              <p className="mt-2 text-base text-gray-400 leading-relaxed">{ramResult.reason}</p>
+            </div>
           </section>
         )}
 
-        {/* STORAGE RESULT */}
+        {/* RESULTS - STORAGE */}
         {storageResult && (
-          <section className="mt-6 rounded-2xl border p-6">
-            <p className="text-sm text-gray-500">
-              Compatibility result
-            </p>
-
-            <h2 className="mt-1 text-2xl font-bold">
-              {getStatusLabel(storageResult.status)}
-            </h2>
-
-            <p className="mt-3 font-medium">{storageResult.title}</p>
-
-            <p className="mt-2 text-gray-600">{storageResult.reason}</p>
+          <section className="overflow-hidden rounded-2xl bg-gray-900 text-white shadow-xl animate-in zoom-in-95 duration-300">
+            <div className="border-b border-gray-800 p-6 sm:p-8">
+              <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">Analysis Result</p>
+              <h2 className="mt-2 text-3xl font-extrabold">{getStatusLabel(storageResult.status)}</h2>
+              <p className="mt-4 text-lg font-medium text-gray-100">{storageResult.title}</p>
+              <p className="mt-2 text-base text-gray-400 leading-relaxed">{storageResult.reason}</p>
+            </div>
           </section>
         )}
 
         {/* SOURCES */}
-        {hasChecked &&
-          selectedLaptop &&
-          selectedConfiguration &&
-          selectedLaptop.sources.length > 0 && (
-            <section className="mt-6 rounded-2xl border p-6">
-              <h2 className="text-lg font-semibold">Sources</h2>
-
-              <div className="mt-4 space-y-3">
-                {selectedLaptop.sources.map((source) => (
-                  <div key={source.id} className="rounded-xl bg-gray-50 p-4">
-                    <a
-                      href={source.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-medium underline"
-                    >
-                      {source.title}
-                    </a>
-
-                    <p className="mt-1 text-sm text-gray-500">
-                      {source.publisher} · {source.type}
-                    </p>
-
-                    <p className="mt-1 text-xs text-gray-400">
-                      Accessed: {source.accessedAt}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
+        {hasChecked && selectedLaptop && selectedConfiguration && selectedLaptop.sources.length > 0 && (
+          <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+            <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4">Verified Sources</h2>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {selectedLaptop.sources.map((source) => (
+                <a
+                  key={source.id}
+                  href={source.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group block rounded-xl border border-gray-100 bg-gray-50 p-4 transition-colors hover:border-blue-200 hover:bg-blue-50"
+                >
+                  <p className="font-semibold text-gray-900 group-hover:text-blue-700 truncate">{source.title}</p>
+                  <p className="mt-1 text-xs text-gray-500">{source.publisher} · {source.type}</p>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </main>
   );
