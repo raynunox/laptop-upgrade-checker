@@ -462,4 +462,238 @@ export const laptops: Laptop[] = [
 
     lastVerifiedAt: "2026-09-23",
   },
+    {
+    id: "lenovo-thinkpad-t480",
+
+    brand: "Lenovo",
+    family: "ThinkPad",
+    model: "ThinkPad T480",
+    modelNumber: "20L5 / 20L6",
+    releaseYear: 2018,
+
+    verificationStatus: "verified",
+
+    sources: [
+      {
+        id: "lenovo-t480-psref",
+        title: "ThinkPad T480 Platform Specifications",
+        url: "https://psref.lenovo.com/Product/ThinkPad_T480",
+        type: "official_specs",
+        publisher: "Lenovo",
+        accessedAt: "2026-09-23",
+      },
+      {
+        id: "lenovo-t480-hmm",
+        title: "T480 Hardware Maintenance Manual",
+        url: "https://download.lenovo.com/pccbbs/mobiles_pdf/t480_hmm_en.pdf",
+        type: "official_service_manual",
+        publisher: "Lenovo",
+        accessedAt: "2026-09-23",
+      },
+    ],
+
+    configurations: [
+      {
+        id: "primary-storage-2-5-inch",
+
+        label: "2.5-inch SATA primary storage configuration",
+
+        conditions: [
+          "Primary storage uses the 2.5-inch drive bay.",
+          "The system may also support an M.2 2242 drive in the WWAN slot on applicable configurations.",
+        ],
+
+        memory: {
+          status: "yes",
+          type: "DDR4-2400",
+          formFactor: "SO-DIMM",
+          slots: 2,
+          maxTotalGb: 32,
+          supportedSpeedsMts: [2400],
+
+          evidence: {
+            sourceIds: [
+              "lenovo-t480-psref",
+              "lenovo-t480-hmm",
+            ],
+            notes:
+              "Lenovo documents two DDR4 SO-DIMM sockets, dual-channel capability, and a maximum supported memory configuration of 32 GB at 2400 MHz/MT/s, with processor-dependent downclocking possible.",
+          },
+        },
+
+        storage: {
+          status: "conditional",
+          physicalSlots: 1,
+
+          options: [
+            {
+              formFactor: "2.5-inch",
+              interface: "SATA 6 Gb/s",
+              generation: "SATA",
+              replaceable: "yes",
+
+              evidence: {
+                sourceIds: [
+                  "lenovo-t480-psref",
+                  "lenovo-t480-hmm",
+                ],
+                notes:
+                  "Lenovo documents a 2.5-inch, 7 mm SATA storage bay for HDD or SATA SSD configurations.",
+              },
+            },
+            {
+              formFactor: "M.2 2242",
+              interface: "PCIe NVMe",
+              generation: "PCIe 3.0 x2",
+              maxCapacityGb: 128,
+              replaceable: "yes",
+
+              evidence: {
+                sourceIds: [
+                  "lenovo-t480-psref",
+                  "lenovo-t480-hmm",
+                ],
+                notes:
+                  "Lenovo documents an M.2 2242 PCIe NVMe drive in the WWAN slot as optional second storage on applicable configurations; it is mutually exclusive with WWAN.",
+              },
+            },
+          ],
+
+          evidence: {
+            sourceIds: [
+              "lenovo-t480-psref",
+              "lenovo-t480-hmm",
+            ],
+            notes:
+              "The T480's primary storage architecture varies by factory configuration. Lenovo documents a 2.5-inch storage bay or an M.2 2280 primary SSD configuration, with an optional M.2 2242 drive in the WWAN slot on some systems.",
+          },
+        },
+
+        battery: {
+          status: "yes",
+          removable: true,
+          replaceable: true,
+          capacityWh: 24,
+
+          evidence: {
+            sourceIds: [
+              "lenovo-t480-psref",
+              "lenovo-t480-hmm",
+            ],
+            notes:
+              "Lenovo documents an integrated 24 Wh battery plus a swappable external battery. The external battery is user-removable.",
+          },
+        },
+
+        evidence: {
+          sourceIds: [
+            "lenovo-t480-psref",
+            "lenovo-t480-hmm",
+          ],
+        },
+      },
+
+      {
+        id: "m2-2280-primary-storage",
+
+        label: "M.2 2280 primary storage configuration",
+
+        conditions: [
+          "Primary storage uses the M.2 2280 slot.",
+          "An optional M.2 2242 drive may be present in the WWAN slot on applicable configurations.",
+        ],
+
+        memory: {
+          status: "yes",
+          type: "DDR4-2400",
+          formFactor: "SO-DIMM",
+          slots: 2,
+          maxTotalGb: 32,
+          supportedSpeedsMts: [2400],
+
+          evidence: {
+            sourceIds: [
+              "lenovo-t480-psref",
+              "lenovo-t480-hmm",
+            ],
+            notes:
+              "Lenovo documents two DDR4 SO-DIMM sockets and a maximum supported memory configuration of 32 GB.",
+          },
+        },
+
+        storage: {
+          status: "conditional",
+          physicalSlots: 1,
+
+          options: [
+            {
+              formFactor: "M.2 2280",
+              interface: "PCIe NVMe",
+              generation: "PCIe 3.0 x4",
+              replaceable: "yes",
+
+              evidence: {
+                sourceIds: [
+                  "lenovo-t480-psref",
+                  "lenovo-t480-hmm",
+                ],
+                notes:
+                  "Lenovo documents an M.2 2280 PCIe NVMe primary storage configuration.",
+              },
+            },
+            {
+              formFactor: "M.2 2242",
+              interface: "PCIe NVMe",
+              generation: "PCIe 3.0 x2",
+              maxCapacityGb: 128,
+              replaceable: "yes",
+
+              evidence: {
+                sourceIds: [
+                  "lenovo-t480-psref",
+                  "lenovo-t480-hmm",
+                ],
+                notes:
+                  "Lenovo documents an optional M.2 2242 PCIe NVMe drive in the WWAN slot as second storage on applicable configurations; it is mutually exclusive with WWAN.",
+              },
+            },
+          ],
+
+          evidence: {
+            sourceIds: [
+              "lenovo-t480-psref",
+              "lenovo-t480-hmm",
+            ],
+            notes:
+              "The primary storage uses the M.2 2280 slot in this configuration. A separate M.2 2242 drive may be used in the WWAN slot on supported systems.",
+          },
+        },
+
+        battery: {
+          status: "yes",
+          removable: true,
+          replaceable: true,
+          capacityWh: 24,
+
+          evidence: {
+            sourceIds: [
+              "lenovo-t480-psref",
+              "lenovo-t480-hmm",
+            ],
+            notes:
+              "Lenovo documents an integrated 24 Wh battery plus a swappable external battery.",
+          },
+        },
+
+        evidence: {
+          sourceIds: [
+            "lenovo-t480-psref",
+            "lenovo-t480-hmm",
+          ],
+        },
+      },
+    ],
+
+    lastVerifiedAt: "2026-09-23",
+  },
 ];
