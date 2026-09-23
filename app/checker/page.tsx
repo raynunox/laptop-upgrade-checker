@@ -2,12 +2,29 @@
 
 import { useMemo, useState } from "react";
 import { laptops } from "../../data/laptops";
+import {
+  checkRamCompatibility,
+  checkStorageCompatibility,
+  getStatusLabel,
+} from "../../lib/compatibility";
+
+type CheckType = "ram" | "storage";
 
 export default function CheckerPage() {
   const [brand, setBrand] = useState("");
   const [model, setModel] = useState("");
   const [configurationId, setConfigurationId] = useState("");
-  const [checked, setChecked] = useState(false);
+
+  const [checkType, setCheckType] =
+    useState<CheckType | "">("");
+
+  const [ramCapacity, setRamCapacity] = useState("");
+  const [storageOptionId, setStorageOptionId] =
+    useState("");
+  const [storageCapacity, setStorageCapacity] =
+    useState("");
+
+  const [hasChecked, setHasChecked] = useState(false);
 
   const brands = useMemo(() => {
     return [...new Set(laptops.map((laptop) => laptop.brand))].sort();
@@ -41,68 +58,134 @@ export default function CheckerPage() {
     );
   }, [selectedLaptop, configurationId]);
 
+  const selectedStorageOption = useMemo(() => {
+    if (!selectedConfiguration || !storageOptionId) {
+      return null;
+    }
+
+    return selectedConfiguration.storage.options.find(
+      (option, index) =>
+        `${option.formFactor}-${option.interface}-${index}` ===
+        storageOptionId
+    );
+  }, [selectedConfiguration, storageOptionId]);
+
+  const ramCapacities = useMemo(() => {
+    const common = [
+      4,
+      8,
+      16,
+      24,
+      32,
+      40,
+      48,
+      64,
+      96,
+      128,
+    ];
+
+    const max =
+      selectedConfiguration?.memory.maxTotalGb;
+
+    const onboard =
+      selectedConfiguration?.memory.onboardGb;
+
+    return common.filter((capacity) => {
+      if (onboard && capacity < onboard) {
+        return false;
+      }
+
+      if (max && capacity > max) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [selectedConfiguration]);
+
+  const storageCapacities = useMemo(() => {
+    const common = [
+      128,
+      256,
+      500,
+      512,
+      1000,
+      2000,
+      4000,
+      8000,
+    ];
+
+    const max =
+      selectedStorageOption?.maxCapacityGb;
+
+    return common.filter((capacity) => {
+      if (max && capacity > max) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [selectedStorageOption]);
+
+  function resetChecks() {
+    setCheckType("");
+    setRamCapacity("");
+    setStorageOptionId("");
+    setStorageCapacity("");
+    setHasChecked(false);
+  }
+
   function handleBrandChange(value: string) {
     setBrand(value);
     setModel("");
     setConfigurationId("");
-    setChecked(false);
+    resetChecks();
   }
 
   function handleModelChange(value: string) {
     setModel(value);
     setConfigurationId("");
-    setChecked(false);
+    resetChecks();
   }
 
   function handleConfigurationChange(value: string) {
     setConfigurationId(value);
-    setChecked(false);
+    resetChecks();
   }
 
   function handleCheck() {
-    if (!selectedLaptop) return;
-
-    if (
-      configurations.length > 1 &&
-      !configurationId
-    ) {
-      return;
-    }
-
-    setChecked(true);
+    setHasChecked(true);
   }
 
-  function compatibilityLabel(status: string) {
-    switch (status) {
-      case "yes":
-        return "✅ Upgradeable";
+  const ramResult =
+    hasChecked &&
+    checkType === "ram" &&
+    selectedConfiguration &&
+    ramCapacity
+      ? checkRamCompatibility(
+          selectedConfiguration.memory,
+          Number(ramCapacity)
+        )
+      : null;
 
-      case "no":
-        return "❌ Not upgradeable";
-
-      case "conditional":
-        return "⚠️ Conditional";
-
-      default:
-        return "❓ Unknown";
-    }
-  }
-
-  function verificationLabel(status: string) {
-    switch (status) {
-      case "verified":
-        return "✅ Verified";
-
-      case "partially_verified":
-        return "⚠️ Partially Verified";
-
-      case "needs_review":
-        return "🔎 Needs Review";
-
-      default:
-        return "📝 Draft";
-    }
-  }
+  const storageResult =
+    hasChecked &&
+    checkType === "storage" &&
+    selectedConfiguration &&
+    selectedStorageOption
+      ? checkStorageCompatibility(
+          selectedConfiguration.storage,
+          {
+            formFactor:
+              selectedStorageOption.formFactor,
+            interface:
+              selectedStorageOption.interface,
+            capacityGb: storageCapacity
+              ? Number(storageCapacity)
+              : undefined,
+          }
+        )
+      : null;
 
   return (
     <main className="min-h-screen bg-white p-8">
@@ -114,19 +197,23 @@ export default function CheckerPage() {
             LAPTOP UPGRADE CHECKER
           </p>
 
-          <h1 className="mt-2 text-3xl font-bold">
+          <h1 className="mt-2 text-3xl font-bold tracking-tight">
             Can I Upgrade My Laptop?
           </h1>
 
           <p className="mt-2 text-gray-600">
-            Select your laptop and configuration to check
-            its upgrade compatibility.
+            Check whether a RAM or storage upgrade is
+            compatible with your laptop.
           </p>
         </div>
 
-        {/* FORM */}
+        {/* LAPTOP SELECTION */}
         <section className="mt-8 rounded-2xl border p-6 shadow-sm">
-          <div className="space-y-5">
+          <h2 className="text-lg font-semibold">
+            1. Select your laptop
+          </h2>
+
+          <div className="mt-5 space-y-5">
 
             {/* BRAND */}
             <div>
@@ -221,8 +308,8 @@ export default function CheckerPage() {
                   </select>
 
                   {selectedConfiguration?.conditions &&
-                    selectedConfiguration.conditions.length >
-                      0 && (
+                    selectedConfiguration.conditions
+                      .length > 0 && (
                       <div className="mt-3 rounded-xl bg-gray-50 p-4 text-sm text-gray-600">
                         <p className="font-semibold text-gray-900">
                           Configuration notes
@@ -241,338 +328,265 @@ export default function CheckerPage() {
                     )}
                 </div>
               )}
-
-            {/* BUTTON */}
-            <button
-              type="button"
-              onClick={handleCheck}
-              disabled={
-                !brand ||
-                !model ||
-                (configurations.length > 1 &&
-                  !configurationId)
-              }
-              className="w-full rounded-xl bg-black px-6 py-3 font-medium text-white disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              Check Compatibility
-            </button>
           </div>
         </section>
 
-        {/* RESULT */}
-        {checked &&
-          selectedLaptop &&
-          selectedConfiguration && (
-            <section className="mt-8 space-y-6">
+        {/* COMPONENT */}
+        {selectedConfiguration && (
+          <section className="mt-6 rounded-2xl border p-6 shadow-sm">
+            <h2 className="text-lg font-semibold">
+              2. What do you want to upgrade?
+            </h2>
 
-              {/* SUMMARY */}
-              <div className="rounded-2xl border p-6">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                  <div>
-                    <p className="text-sm text-gray-500">
-                      {selectedLaptop.brand}{" "}
-                      {selectedLaptop.family}
-                    </p>
+            <div className="mt-5">
+              <select
+                value={checkType}
+                onChange={(e) => {
+                  setCheckType(
+                    e.target.value as CheckType
+                  );
 
-                    <h2 className="mt-1 text-2xl font-bold">
-                      {selectedLaptop.model}
-                    </h2>
+                  setRamCapacity("");
+                  setStorageOptionId("");
+                  setStorageCapacity("");
+                  setHasChecked(false);
+                }}
+                className="w-full rounded-xl border p-3"
+              >
+                <option value="">
+                  Select component
+                </option>
 
-                    <p className="mt-2 text-sm text-gray-600">
-                      Configuration:{" "}
-                      <span className="font-medium text-gray-900">
-                        {selectedConfiguration.label}
-                      </span>
-                    </p>
-                  </div>
+                <option value="ram">
+                  RAM
+                </option>
 
-                  <span className="rounded-full bg-gray-100 px-3 py-1 text-sm font-medium">
-                    {verificationLabel(
-                      selectedLaptop.verificationStatus
-                    )}
-                  </span>
-                </div>
+                <option value="storage">
+                  SSD / Storage
+                </option>
+              </select>
+            </div>
+          </section>
+        )}
 
-                <p className="mt-4 text-xs text-gray-500">
-                  Last verified:{" "}
-                  {selectedLaptop.lastVerifiedAt ??
-                    "Unknown"}
-                </p>
+        {/* RAM */}
+        {selectedConfiguration &&
+          checkType === "ram" && (
+            <section className="mt-6 rounded-2xl border p-6 shadow-sm">
+              <h2 className="text-lg font-semibold">
+                3. Select target RAM
+              </h2>
+
+              <div className="mt-5">
+                <label className="mb-2 block text-sm font-semibold">
+                  Target capacity
+                </label>
+
+                <select
+                  value={ramCapacity}
+                  onChange={(e) => {
+                    setRamCapacity(e.target.value);
+                    setHasChecked(false);
+                  }}
+                  className="w-full rounded-xl border p-3"
+                >
+                  <option value="">
+                    Select RAM capacity
+                  </option>
+
+                  {ramCapacities.map((capacity) => (
+                    <option
+                      key={capacity}
+                      value={capacity}
+                    >
+                      {capacity} GB
+                    </option>
+                  ))}
+                </select>
               </div>
+            </section>
+          )}
 
-              {/* RAM */}
-              <div className="rounded-2xl border p-6">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-semibold">
-                    RAM
-                  </h3>
+        {/* STORAGE */}
+        {selectedConfiguration &&
+          checkType === "storage" && (
+            <section className="mt-6 rounded-2xl border p-6 shadow-sm">
+              <h2 className="text-lg font-semibold">
+                3. Select target storage
+              </h2>
 
-                  <span className="text-sm font-medium">
-                    {compatibilityLabel(
-                      selectedConfiguration.memory.status
+              <div className="mt-5 space-y-5">
+
+                {/* STORAGE OPTION */}
+                <div>
+                  <label className="mb-2 block text-sm font-semibold">
+                    Storage type
+                  </label>
+
+                  <select
+                    value={storageOptionId}
+                    onChange={(e) => {
+                      setStorageOptionId(
+                        e.target.value
+                      );
+                      setStorageCapacity("");
+                      setHasChecked(false);
+                    }}
+                    className="w-full rounded-xl border p-3"
+                  >
+                    <option value="">
+                      Select storage option
+                    </option>
+
+                    {selectedConfiguration.storage.options.map(
+                      (option, index) => (
+                        <option
+                          key={`${option.formFactor}-${option.interface}-${index}`}
+                          value={`${option.formFactor}-${option.interface}-${index}`}
+                        >
+                          {option.formFactor} ·{" "}
+                          {option.interface}
+                        </option>
+                      )
                     )}
-                  </span>
+                  </select>
                 </div>
 
-                <div className="mt-5 grid gap-4 sm:grid-cols-2">
-
+                {/* CAPACITY */}
+                {selectedStorageOption && (
                   <div>
-                    <p className="text-sm text-gray-500">
-                      Type
-                    </p>
+                    <label className="mb-2 block text-sm font-semibold">
+                      Target capacity
+                    </label>
 
-                    <p className="mt-1 font-medium">
-                      {selectedConfiguration.memory.type ??
-                        "Unknown"}
-                    </p>
-                  </div>
+                    <select
+                      value={storageCapacity}
+                      onChange={(e) => {
+                        setStorageCapacity(
+                          e.target.value
+                        );
+                        setHasChecked(false);
+                      }}
+                      className="w-full rounded-xl border p-3"
+                    >
+                      <option value="">
+                        Select capacity
+                      </option>
 
-                  <div>
-                    <p className="text-sm text-gray-500">
-                      Form factor
-                    </p>
-
-                    <p className="mt-1 font-medium">
-                      {selectedConfiguration.memory
-                        .formFactor ?? "Unknown"}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-sm text-gray-500">
-                      Slots
-                    </p>
-
-                    <p className="mt-1 font-medium">
-                      {selectedConfiguration.memory.slots ??
-                        "Unknown"}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-sm text-gray-500">
-                      Maximum
-                    </p>
-
-                    <p className="mt-1 font-medium">
-                      {selectedConfiguration.memory.maxTotalGb
-                        ? `${selectedConfiguration.memory.maxTotalGb} GB`
-                        : "Unknown"}
-                    </p>
-                  </div>
-
-                  <div className="sm:col-span-2">
-                    <p className="text-sm text-gray-500">
-                      Supported speeds
-                    </p>
-
-                    <p className="mt-1 font-medium">
-                      {selectedConfiguration.memory
-                        .supportedSpeedsMts?.length
-                        ? selectedConfiguration.memory
-                            .supportedSpeedsMts
-                            .map(
-                              (speed) =>
-                                `${speed} MT/s`
-                            )
-                            .join(" / ")
-                        : "Unknown"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* STORAGE */}
-              <div className="rounded-2xl border p-6">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-semibold">
-                    Storage
-                  </h3>
-
-                  <span className="text-sm font-medium">
-                    {compatibilityLabel(
-                      selectedConfiguration.storage.status
-                    )}
-                  </span>
-                </div>
-
-                <div className="mt-4">
-                  <p className="text-sm text-gray-500">
-                    Physical storage slots
-                  </p>
-
-                  <p className="mt-1 font-medium">
-                    {
-                      selectedConfiguration.storage
-                        .physicalSlots
-                    }
-                  </p>
-                </div>
-
-                <div className="mt-6 space-y-3">
-                  <p className="text-sm font-semibold">
-                    Supported storage options
-                  </p>
-
-                  {selectedConfiguration.storage.options.map(
-                    (option, index) => (
-                      <div
-                        key={`${option.formFactor}-${option.interface}-${index}`}
-                        className="rounded-xl bg-gray-50 p-4"
-                      >
-                        <p>
-                          <span className="text-gray-500">
-                            Form factor:
-                          </span>{" "}
-                          <strong>
-                            {option.formFactor}
-                          </strong>
-                        </p>
-
-                        <p className="mt-1">
-                          <span className="text-gray-500">
-                            Interface:
-                          </span>{" "}
-                          <strong>
-                            {option.interface}
-                          </strong>
-                        </p>
-
-                        <p className="mt-1">
-                          <span className="text-gray-500">
-                            Generation:
-                          </span>{" "}
-                          <strong>
-                            {option.generation ??
-                              "Unknown"}
-                          </strong>
-                        </p>
-
-                        <p className="mt-1">
-                          <span className="text-gray-500">
-                            Documented maximum:
-                          </span>{" "}
-                          <strong>
-                            {option.maxCapacityGb
-                              ? `${option.maxCapacityGb} GB`
-                              : "Unknown"}
-                          </strong>
-                        </p>
-
-                        <p className="mt-1">
-                          <span className="text-gray-500">
-                            Replaceable:
-                          </span>{" "}
-                          <strong>
-                            {option.replaceable === "yes"
-                              ? "✅ Yes"
-                              : option.replaceable ===
-                                "no"
-                              ? "❌ No"
-                              : option.replaceable ===
-                                "conditional"
-                              ? "⚠️ Conditional"
-                              : "❓ Unknown"}
-                          </strong>
-                        </p>
-                      </div>
-                    )
-                  )}
-                </div>
-
-                {selectedConfiguration.storage.evidence
-                  .notes && (
-                  <div className="mt-5 rounded-xl bg-gray-50 p-4 text-sm text-gray-600">
-                    {
-                      selectedConfiguration.storage
-                        .evidence.notes
-                    }
+                      {storageCapacities.map(
+                        (capacity) => (
+                          <option
+                            key={capacity}
+                            value={capacity}
+                          >
+                            {capacity >= 1000
+                              ? `${capacity / 1000} TB`
+                              : `${capacity} GB`}
+                          </option>
+                        )
+                      )}
+                    </select>
                   </div>
                 )}
               </div>
+            </section>
+          )}
 
-              {/* BATTERY */}
-              <div className="rounded-2xl border p-6">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-semibold">
-                    Battery
-                  </h3>
+        {/* CHECK BUTTON */}
+        {selectedConfiguration &&
+          ((checkType === "ram" &&
+            ramCapacity) ||
+            (checkType === "storage" &&
+              storageOptionId &&
+              storageCapacity)) && (
+            <button
+              type="button"
+              onClick={handleCheck}
+              className="mt-6 w-full rounded-xl bg-black px-6 py-4 font-medium text-white transition hover:bg-gray-800"
+            >
+              Check Compatibility
+            </button>
+          )}
 
-                  <span className="text-sm font-medium">
-                    {selectedConfiguration.battery.status ===
-                    "yes"
-                      ? "✅ Replaceable"
-                      : selectedConfiguration.battery
-                          .status === "no"
-                      ? "❌ Not replaceable"
-                      : selectedConfiguration.battery
-                          .status === "conditional"
-                      ? "⚠️ Conditional"
-                      : "❓ Unknown"}
-                  </span>
-                </div>
+        {/* RAM RESULT */}
+        {ramResult && (
+          <section className="mt-6 rounded-2xl border p-6">
+            <p className="text-sm text-gray-500">
+              Compatibility result
+            </p>
 
-                <div className="mt-4 space-y-2">
-                  <p>
-                    <span className="text-gray-500">
-                      Removable:
-                    </span>{" "}
-                    {selectedConfiguration.battery
-                      .removable === true
-                      ? "Yes"
-                      : selectedConfiguration.battery
-                          .removable === false
-                      ? "No"
-                      : "Unknown"}
-                  </p>
+            <h2 className="mt-1 text-2xl font-bold">
+              {getStatusLabel(ramResult.status)}
+            </h2>
 
-                  <p>
-                    <span className="text-gray-500">
-                      Capacity:
-                    </span>{" "}
-                    {selectedConfiguration.battery
-                      .capacityWh
-                      ? `${selectedConfiguration.battery.capacityWh} Wh`
-                      : "Unknown"}
-                  </p>
-                </div>
-              </div>
+            <p className="mt-3 font-medium">
+              {ramResult.title}
+            </p>
 
-              {/* SOURCES */}
-              <div className="rounded-2xl border p-6">
-                <h3 className="text-xl font-semibold">
-                  Sources
-                </h3>
+            <p className="mt-2 text-gray-600">
+              {ramResult.reason}
+            </p>
+          </section>
+        )}
 
-                <div className="mt-5 space-y-3">
-                  {selectedLaptop.sources.map(
-                    (source) => (
-                      <div
-                        key={source.id}
-                        className="rounded-xl bg-gray-50 p-4"
+        {/* STORAGE RESULT */}
+        {storageResult && (
+          <section className="mt-6 rounded-2xl border p-6">
+            <p className="text-sm text-gray-500">
+              Compatibility result
+            </p>
+
+            <h2 className="mt-1 text-2xl font-bold">
+              {getStatusLabel(storageResult.status)}
+            </h2>
+
+            <p className="mt-3 font-medium">
+              {storageResult.title}
+            </p>
+
+            <p className="mt-2 text-gray-600">
+              {storageResult.reason}
+            </p>
+          </section>
+        )}
+
+        {/* SOURCES */}
+        {hasChecked &&
+          selectedLaptop &&
+          selectedConfiguration && (
+            <section className="mt-6 rounded-2xl border p-6">
+              <h2 className="text-lg font-semibold">
+                Sources
+              </h2>
+
+              <div className="mt-4 space-y-3">
+                {selectedLaptop.sources.map(
+                  (source) => (
+                    <div
+                      key={source.id}
+                      className="rounded-xl bg-gray-50 p-4"
+                    >
+                      <a
+                        href={source.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-medium underline"
                       >
-                        <a
-                          href={source.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="font-medium underline"
-                        >
-                          {source.title}
-                        </a>
+                        {source.title}
+                      </a>
 
-                        <p className="mt-1 text-sm text-gray-500">
-                          {source.publisher} ·{" "}
-                          {source.type}
-                        </p>
+                      <p className="mt-1 text-sm text-gray-500">
+                        {source.publisher} ·{" "}
+                        {source.type}
+                      </p>
 
-                        <p className="mt-1 text-xs text-gray-400">
-                          Accessed:{" "}
-                          {source.accessedAt}
-                        </p>
-                      </div>
-                    )
-                  )}
-                </div>
+                      <p className="mt-1 text-xs text-gray-400">
+                        Accessed:{" "}
+                        {source.accessedAt}
+                      </p>
+                    </div>
+                  )
+                )}
               </div>
             </section>
           )}
