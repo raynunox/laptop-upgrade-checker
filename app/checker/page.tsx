@@ -71,18 +71,19 @@ export default function CheckerPage() {
   }, [selectedConfiguration, storageOptionId]);
 
   const ramCapacities = useMemo(() => {
-    const common = [
-      4,
-      8,
-      16,
-      24,
-      32,
-      40,
-      48,
-      64,
-      96,
-      128,
-    ];
+  return [
+    4,
+    8,
+    16,
+    24,
+    32,
+    40,
+    48,
+    64,
+    96,
+    128,
+  ];
+}, []);
 
     const max =
       selectedConfiguration?.memory.maxTotalGb;
