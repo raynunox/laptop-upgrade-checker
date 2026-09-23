@@ -71,39 +71,9 @@ export default function CheckerPage() {
   }, [selectedConfiguration, storageOptionId]);
 
   const ramCapacities = useMemo(() => {
-  return [
-    4,
-    8,
-    16,
-    24,
-    32,
-    40,
-    48,
-    64,
-    96,
-    128,
-  ];
-}, []);
-
-    const max =
-      selectedConfiguration?.memory.maxTotalGb;
-
-    const onboard =
-      selectedConfiguration?.memory.onboardGb;
-
-    return common.filter((capacity) => {
-      if (onboard && capacity < onboard) {
-        return false;
-      }
-
-      if (max && capacity > max) {
-        return false;
-      }
-
-      return true;
-    });
-  }, [selectedConfiguration]);
-
+  return [4, 8, 16, 32, 64, 128];
+}, [selectedConfiguration]);
+  
   const storageCapacities = useMemo(() => {
     const common = [
       128,
