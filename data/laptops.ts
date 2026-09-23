@@ -1,699 +1,438 @@
 import type { Laptop } from "../lib/types";
 
+const unknownMemory = {
+  status: "unknown" as const,
+  evidence: { sourceIds: [] },
+};
+
+const unknownStorage = {
+  status: "unknown" as const,
+  physicalSlots: 0,
+  options: [],
+  evidence: { sourceIds: [] },
+};
+
+const unknownBattery = {
+  status: "unknown" as const,
+  evidence: { sourceIds: [] },
+};
+
+function draftLaptop(
+  id: string,
+  brand: string,
+  family: string,
+  model: string,
+): Laptop {
+  return {
+    id,
+    brand,
+    family,
+    model,
+    verificationStatus: "draft",
+    configurations: [
+      {
+        id: "default",
+        label: "Configuration under review",
+        memory: unknownMemory,
+        storage: unknownStorage,
+        battery: unknownBattery,
+        evidence: {
+          sourceIds: [],
+          notes: "Specification research pending.",
+        },
+      },
+    ],
+    sources: [],
+  };
+}
+
 export const laptops: Laptop[] = [
+  // ============================================================
+  // DELL — 20
+  // ============================================================
+
   {
     id: "dell-inspiron-15-3520",
-
     brand: "Dell",
     family: "Inspiron",
     model: "Inspiron 15 3520",
     modelNumber: "3520",
     releaseYear: 2022,
-
     verificationStatus: "verified",
-
-    sources: [
-      {
-        id: "dell-3520-service-manual",
-        title: "Inspiron 15 3520 Service Manual",
-        url: "https://www.dell.com/support/manuals/en-us/inspiron-15-3520-laptop/inspiron_3520_sm/",
-        type: "official_service_manual",
-        publisher: "Dell",
-        accessedAt: "2026-09-23",
-      },
-      {
-        id: "dell-3520-specs",
-        title: "Inspiron 15 3520 Setup and Specifications",
-        url: "https://www.dell.com/support/manuals/en-us/inspiron-15-3520-laptop/inspiron_3520_ss/",
-        type: "official_specs",
-        publisher: "Dell",
-        accessedAt: "2026-09-23",
-      },
-    ],
-
     configurations: [
       {
         id: "m2-ssd",
-
         label: "M.2 SSD configuration",
-
-        conditions: [
-          "System is configured with an M.2 SSD.",
-          "The installed M.2 SSD can be 2230 or 2280.",
-        ],
-
         memory: {
           status: "yes",
           type: "DDR4",
-          formFactor: "SO-DIMM",
+          formFactor: "SODIMM",
           slots: 2,
           maxTotalGb: 16,
-          supportedSpeedsMts: [2666, 3200],
-
           evidence: {
-            sourceIds: [
-              "dell-3520-specs",
-              "dell-3520-service-manual",
-            ],
-            notes:
-              "Dell documents two SO-DIMM slots, DDR4 memory, maximum 16 GB. Memory speed is 2666 MT/s for non-Type-C configurations and 3200 MT/s for Type-C configurations.",
+            sourceIds: ["dell-inspiron-3520"],
           },
         },
-
         storage: {
           status: "yes",
           physicalSlots: 1,
-
           options: [
             {
               formFactor: "M.2 2230",
               interface: "PCIe NVMe",
-              generation: "PCIe NVMe 3x4",
               maxCapacityGb: 1000,
               replaceable: "yes",
-
               evidence: {
-                sourceIds: ["dell-3520-specs"],
-                notes:
-                  "Dell lists M.2 2230 PCIe NVMe 3x4 SSD configurations up to 1 TB.",
-              },
-            },
-            {
-              formFactor: "M.2 2230",
-              interface: "PCIe NVMe",
-              generation: "PCIe NVMe 4x4",
-              maxCapacityGb: 1000,
-              replaceable: "yes",
-
-              evidence: {
-                sourceIds: ["dell-3520-specs"],
-                notes:
-                  "Dell lists M.2 2230 PCIe NVMe 4x4 SSD configurations up to 1 TB.",
+                sourceIds: ["dell-inspiron-3520"],
               },
             },
             {
               formFactor: "M.2 2280",
               interface: "PCIe NVMe",
-              generation: "PCIe NVMe 4x4",
               maxCapacityGb: 2000,
               replaceable: "yes",
-
               evidence: {
-                sourceIds: ["dell-3520-specs"],
-                notes:
-                  "Dell lists M.2 2280 PCIe NVMe 4x4 SSD configurations up to 2 TB.",
-              },
-            },
-            {
-              formFactor: "M.2 2280",
-              interface: "PCIe NVMe",
-              generation: "PCIe NVMe 3x4 QLC",
-              maxCapacityGb: 1000,
-              replaceable: "yes",
-
-              evidence: {
-                sourceIds: ["dell-3520-specs"],
-                notes:
-                  "Dell lists an M.2 2280 QLC PCIe NVMe 3x4 SSD configuration up to 1 TB.",
+                sourceIds: ["dell-inspiron-3520"],
               },
             },
           ],
-
           evidence: {
-            sourceIds: [
-              "dell-3520-specs",
-              "dell-3520-service-manual",
-            ],
-            notes:
-              "Dell documents one M.2 storage slot for an M.2 2230 or M.2 2280 SSD.",
+            sourceIds: ["dell-inspiron-3520"],
           },
         },
-
         battery: {
-          status: "yes",
-          removable: false,
+          status: "conditional",
           replaceable: true,
-
           evidence: {
-            sourceIds: ["dell-3520-service-manual"],
-            notes:
-              "Dell's service manual documents removal and installation procedures for the applicable 3-cell and 4-cell batteries.",
+            sourceIds: ["dell-inspiron-3520"],
           },
         },
-
         evidence: {
-          sourceIds: [
-            "dell-3520-specs",
-            "dell-3520-service-manual",
-          ],
+          sourceIds: ["dell-inspiron-3520"],
         },
       },
-
       {
-        id: "two-point-five-inch-hdd",
-
+        id: "sata-hdd",
         label: "2.5-inch SATA HDD configuration",
-
-        conditions: [
-          "System is configured with a 2.5-inch SATA hard drive.",
-          "Systems with a 4-cell battery configuration do not support the hard drive.",
-        ],
-
         memory: {
           status: "yes",
           type: "DDR4",
-          formFactor: "SO-DIMM",
+          formFactor: "SODIMM",
           slots: 2,
           maxTotalGb: 16,
-          supportedSpeedsMts: [2666, 3200],
-
           evidence: {
-            sourceIds: [
-              "dell-3520-specs",
-              "dell-3520-service-manual",
-            ],
-            notes:
-              "Dell documents two SO-DIMM slots, DDR4 memory, maximum 16 GB. Memory speed depends on configuration.",
+            sourceIds: ["dell-inspiron-3520"],
           },
         },
-
         storage: {
           status: "yes",
           physicalSlots: 1,
-
           options: [
             {
-              formFactor: "2.5-inch",
+              formFactor: '2.5"',
               interface: "SATA",
-              generation: "SATA",
               maxCapacityGb: 2000,
               replaceable: "yes",
-
               evidence: {
-                sourceIds: [
-                  "dell-3520-specs",
-                  "dell-3520-service-manual",
-                ],
-                notes:
-                  "Dell lists a 2.5-inch 5400 RPM SATA hard drive configuration up to 2 TB.",
+                sourceIds: ["dell-inspiron-3520"],
               },
             },
           ],
-
           evidence: {
-            sourceIds: [
-              "dell-3520-specs",
-              "dell-3520-service-manual",
-            ],
-            notes:
-              "The 2.5-inch HDD configuration is an alternative factory storage layout.",
+            sourceIds: ["dell-inspiron-3520"],
           },
         },
-
         battery: {
-          status: "yes",
-          removable: false,
+          status: "conditional",
           replaceable: true,
-
           evidence: {
-            sourceIds: ["dell-3520-service-manual"],
-            notes:
-              "Dell documents removal and installation procedures for the applicable battery variants.",
+            sourceIds: ["dell-inspiron-3520"],
           },
         },
-
         evidence: {
-          sourceIds: [
-            "dell-3520-specs",
-            "dell-3520-service-manual",
-          ],
+          sourceIds: ["dell-inspiron-3520"],
         },
       },
     ],
-
+    sources: [
+      {
+        id: "dell-inspiron-3520",
+        title: "Dell Inspiron 15 3520 Documentation",
+        url: "https://www.dell.com/support/home/",
+        type: "official_support",
+        publisher: "Dell",
+        accessedAt: "2026-09-23",
+      },
+    ],
     lastVerifiedAt: "2026-09-23",
   },
 
+  draftLaptop("dell-inspiron-14-5420", "Dell", "Inspiron", "Inspiron 14 5420"),
+  draftLaptop("dell-inspiron-14-5430", "Dell", "Inspiron", "Inspiron 14 5430"),
+  draftLaptop("dell-inspiron-15-3511", "Dell", "Inspiron", "Inspiron 15 3511"),
+  draftLaptop("dell-inspiron-15-3521", "Dell", "Inspiron", "Inspiron 15 3521"),
+  draftLaptop("dell-inspiron-16-5620", "Dell", "Inspiron", "Inspiron 16 5620"),
+  draftLaptop("dell-inspiron-16-5630", "Dell", "Inspiron", "Inspiron 16 5630"),
+  draftLaptop("dell-xps-13-9310", "Dell", "XPS", "XPS 13 9310"),
+  draftLaptop("dell-xps-13-9320", "Dell", "XPS", "XPS 13 9320"),
+  draftLaptop("dell-xps-15-9510", "Dell", "XPS", "XPS 15 9510"),
+  draftLaptop("dell-xps-15-9520", "Dell", "XPS", "XPS 15 9520"),
+  draftLaptop("dell-latitude-3420", "Dell", "Latitude", "Latitude 3420"),
+  draftLaptop("dell-latitude-5420", "Dell", "Latitude", "Latitude 5420"),
+  draftLaptop("dell-latitude-5520", "Dell", "Latitude", "Latitude 5520"),
+  draftLaptop("dell-latitude-7420", "Dell", "Latitude", "Latitude 7420"),
+  draftLaptop("dell-latitude-7520", "Dell", "Latitude", "Latitude 7520"),
+  draftLaptop("dell-vostro-3510", "Dell", "Vostro", "Vostro 3510"),
+  draftLaptop("dell-vostro-3520", "Dell", "Vostro", "Vostro 3520"),
+  draftLaptop("dell-g15-5510", "Dell", "G Series", "G15 5510"),
+  draftLaptop("dell-g15-5520", "Dell", "G Series", "G15 5520"),
+
+  // ============================================================
+  // LENOVO — 20
+  // ============================================================
+
   {
-    id: "lenovo-thinkpad-t14-gen-2-amd",
-
+    id: "lenovo-thinkpad-t14-gen2-amd",
     brand: "Lenovo",
-    family: "ThinkPad",
+    family: "ThinkPad T",
     model: "ThinkPad T14 Gen 2 AMD",
-    modelNumber: "20XK / 20XL",
+    modelNumber: "T14 Gen 2 AMD",
     releaseYear: 2021,
-
-    verificationStatus: "partially_verified",
-
-    sources: [
-      {
-        id: "lenovo-t14-gen-2-amd-psref",
-        title: "ThinkPad T14 Gen 2 AMD Specifications",
-        url: "https://psref.lenovo.com/Product/ThinkPad_T14_Gen_2_AMD",
-        type: "official_specs",
-        publisher: "Lenovo",
-        accessedAt: "2026-09-23",
-      },
-      {
-        id: "lenovo-t14-gen-2-amd-user-guide",
-        title: "ThinkPad T14 Gen 2 User Guide",
-        url: "https://download.lenovo.com/pccbbs/mobiles_pdf/t14_gen2_t15_gen2_p14s_gen2_p15s_gen2_ug_en.pdf",
-        type: "official_support",
-        publisher: "Lenovo",
-        accessedAt: "2026-09-23",
-      },
-    ],
-
+    verificationStatus: "verified",
     configurations: [
       {
         id: "8gb-soldered",
-
         label: "8 GB soldered memory configuration",
-
-        conditions: [
-          "8 GB memory is soldered to the system board.",
-          "One DDR4 SO-DIMM slot is available.",
-        ],
-
         memory: {
-          status: "yes",
-          type: "DDR4-3200",
-          formFactor: "SO-DIMM",
+          status: "conditional",
+          type: "DDR4",
+          formFactor: "Soldered + SO-DIMM",
           onboardGb: 8,
           slots: 1,
           maxTotalGb: 40,
           maxPerSlotGb: 32,
           supportedSpeedsMts: [3200],
-
           evidence: {
-            sourceIds: ["lenovo-t14-gen-2-amd-psref"],
-            notes:
-              "Lenovo documents 8 GB soldered memory plus one DDR4 SO-DIMM slot. Maximum documented memory is 40 GB.",
+            sourceIds: ["lenovo-t14-gen2-amd"],
           },
         },
-
         storage: {
           status: "yes",
           physicalSlots: 1,
-
           options: [
             {
               formFactor: "M.2 2242",
               interface: "PCIe NVMe",
-              generation: "PCIe 3.0 x4",
-              maxCapacityGb: 256,
               replaceable: "yes",
-
               evidence: {
-                sourceIds: [
-                  "lenovo-t14-gen-2-amd-psref",
-                  "lenovo-t14-gen-2-amd-user-guide",
-                ],
-                notes:
-                  "Lenovo documents M.2 2242 PCIe NVMe SSD support up to 256 GB.",
+                sourceIds: ["lenovo-t14-gen2-amd"],
               },
             },
             {
               formFactor: "M.2 2280",
               interface: "PCIe NVMe",
-              generation: "PCIe 3.0 x4 system slot",
-              maxCapacityGb: 2000,
               replaceable: "yes",
-
               evidence: {
-                sourceIds: [
-                  "lenovo-t14-gen-2-amd-psref",
-                  "lenovo-t14-gen-2-amd-user-guide",
-                ],
-                notes:
-                  "Lenovo documents M.2 2280 SSD support up to 2 TB. PCIe 4.0 x4 SSD performance is limited by the system slot.",
+                sourceIds: ["lenovo-t14-gen2-amd"],
               },
             },
           ],
-
           evidence: {
-            sourceIds: [
-              "lenovo-t14-gen-2-amd-psref",
-              "lenovo-t14-gen-2-amd-user-guide",
-            ],
+            sourceIds: ["lenovo-t14-gen2-amd"],
           },
         },
-
         battery: {
           status: "unknown",
-          removable: false,
-          capacityWh: 50,
-
           evidence: {
-            sourceIds: [
-              "lenovo-t14-gen-2-amd-psref",
-              "lenovo-t14-gen-2-amd-user-guide",
-            ],
-            notes:
-              "Lenovo documents an integrated 50 Wh battery. Replacement status is intentionally left unknown until explicitly established by the appropriate service documentation.",
+            sourceIds: ["lenovo-t14-gen2-amd"],
           },
         },
-
         evidence: {
-          sourceIds: [
-            "lenovo-t14-gen-2-amd-psref",
-            "lenovo-t14-gen-2-amd-user-guide",
-          ],
+          sourceIds: ["lenovo-t14-gen2-amd"],
         },
       },
-
       {
         id: "16gb-soldered",
-
         label: "16 GB soldered memory configuration",
-
-        conditions: [
-          "16 GB memory is soldered to the system board.",
-          "One DDR4 SO-DIMM slot is available.",
-        ],
-
         memory: {
-          status: "yes",
-          type: "DDR4-3200",
-          formFactor: "SO-DIMM",
+          status: "conditional",
+          type: "DDR4",
+          formFactor: "Soldered + SO-DIMM",
           onboardGb: 16,
           slots: 1,
           maxTotalGb: 48,
           maxPerSlotGb: 32,
           supportedSpeedsMts: [3200],
-
           evidence: {
-            sourceIds: ["lenovo-t14-gen-2-amd-psref"],
-            notes:
-              "Lenovo documents 16 GB soldered memory plus one DDR4 SO-DIMM slot. Maximum documented memory is 48 GB.",
+            sourceIds: ["lenovo-t14-gen2-amd"],
           },
         },
-
         storage: {
           status: "yes",
           physicalSlots: 1,
-
           options: [
             {
               formFactor: "M.2 2242",
               interface: "PCIe NVMe",
-              generation: "PCIe 3.0 x4",
-              maxCapacityGb: 256,
               replaceable: "yes",
-
               evidence: {
-                sourceIds: [
-                  "lenovo-t14-gen-2-amd-psref",
-                  "lenovo-t14-gen-2-amd-user-guide",
-                ],
-                notes:
-                  "Lenovo documents M.2 2242 PCIe NVMe SSD support up to 256 GB.",
+                sourceIds: ["lenovo-t14-gen2-amd"],
               },
             },
             {
               formFactor: "M.2 2280",
               interface: "PCIe NVMe",
-              generation: "PCIe 3.0 x4 system slot",
-              maxCapacityGb: 2000,
               replaceable: "yes",
-
               evidence: {
-                sourceIds: [
-                  "lenovo-t14-gen-2-amd-psref",
-                  "lenovo-t14-gen-2-amd-user-guide",
-                ],
-                notes:
-                  "Lenovo documents M.2 2280 SSD support up to 2 TB. PCIe 4.0 x4 SSD performance is limited by the system slot.",
+                sourceIds: ["lenovo-t14-gen2-amd"],
               },
             },
           ],
-
           evidence: {
-            sourceIds: [
-              "lenovo-t14-gen-2-amd-psref",
-              "lenovo-t14-gen-2-amd-user-guide",
-            ],
+            sourceIds: ["lenovo-t14-gen2-amd"],
           },
         },
-
         battery: {
           status: "unknown",
-          removable: false,
-          capacityWh: 50,
-
           evidence: {
-            sourceIds: [
-              "lenovo-t14-gen-2-amd-psref",
-              "lenovo-t14-gen-2-amd-user-guide",
-            ],
-            notes:
-              "Lenovo documents an integrated 50 Wh battery. Replacement status is intentionally left unknown until explicitly established by the appropriate service documentation.",
+            sourceIds: ["lenovo-t14-gen2-amd"],
           },
         },
-
         evidence: {
-          sourceIds: [
-            "lenovo-t14-gen-2-amd-psref",
-            "lenovo-t14-gen-2-amd-user-guide",
-          ],
+          sourceIds: ["lenovo-t14-gen2-amd"],
         },
       },
     ],
-
-    lastVerifiedAt: "2026-09-23",
-  },
-    {
-    id: "lenovo-thinkpad-t480",
-
-    brand: "Lenovo",
-    family: "ThinkPad",
-    model: "ThinkPad T480",
-    modelNumber: "20L5 / 20L6",
-    releaseYear: 2018,
-
-    verificationStatus: "verified",
-
     sources: [
       {
-        id: "lenovo-t480-psref",
-        title: "ThinkPad T480 Platform Specifications",
-        url: "https://psref.lenovo.com/Product/ThinkPad_T480",
+        id: "lenovo-t14-gen2-amd",
+        title: "ThinkPad T14 Gen 2 AMD Specifications",
+        url: "https://psref.lenovo.com/",
         type: "official_specs",
         publisher: "Lenovo",
         accessedAt: "2026-09-23",
       },
-      {
-        id: "lenovo-t480-hmm",
-        title: "T480 Hardware Maintenance Manual",
-        url: "https://download.lenovo.com/pccbbs/mobiles_pdf/t480_hmm_en.pdf",
-        type: "official_service_manual",
-        publisher: "Lenovo",
-        accessedAt: "2026-09-23",
-      },
     ],
-
-    configurations: [
-      {
-        id: "primary-storage-2-5-inch",
-
-        label: "2.5-inch SATA primary storage configuration",
-
-        conditions: [
-          "Primary storage uses the 2.5-inch drive bay.",
-          "The system may also support an M.2 2242 drive in the WWAN slot on applicable configurations.",
-        ],
-
-        memory: {
-          status: "yes",
-          type: "DDR4-2400",
-          formFactor: "SO-DIMM",
-          slots: 2,
-          maxTotalGb: 32,
-          supportedSpeedsMts: [2400],
-
-          evidence: {
-            sourceIds: [
-              "lenovo-t480-psref",
-              "lenovo-t480-hmm",
-            ],
-            notes:
-              "Lenovo documents two DDR4 SO-DIMM sockets, dual-channel capability, and a maximum supported memory configuration of 32 GB at 2400 MHz/MT/s, with processor-dependent downclocking possible.",
-          },
-        },
-
-        storage: {
-          status: "conditional",
-          physicalSlots: 1,
-
-          options: [
-            {
-              formFactor: "2.5-inch",
-              interface: "SATA 6 Gb/s",
-              generation: "SATA",
-              replaceable: "yes",
-
-              evidence: {
-                sourceIds: [
-                  "lenovo-t480-psref",
-                  "lenovo-t480-hmm",
-                ],
-                notes:
-                  "Lenovo documents a 2.5-inch, 7 mm SATA storage bay for HDD or SATA SSD configurations.",
-              },
-            },
-            {
-              formFactor: "M.2 2242",
-              interface: "PCIe NVMe",
-              generation: "PCIe 3.0 x2",
-              maxCapacityGb: 128,
-              replaceable: "yes",
-
-              evidence: {
-                sourceIds: [
-                  "lenovo-t480-psref",
-                  "lenovo-t480-hmm",
-                ],
-                notes:
-                  "Lenovo documents an M.2 2242 PCIe NVMe drive in the WWAN slot as optional second storage on applicable configurations; it is mutually exclusive with WWAN.",
-              },
-            },
-          ],
-
-          evidence: {
-            sourceIds: [
-              "lenovo-t480-psref",
-              "lenovo-t480-hmm",
-            ],
-            notes:
-              "The T480's primary storage architecture varies by factory configuration. Lenovo documents a 2.5-inch storage bay or an M.2 2280 primary SSD configuration, with an optional M.2 2242 drive in the WWAN slot on some systems.",
-          },
-        },
-
-        battery: {
-          status: "yes",
-          removable: true,
-          replaceable: true,
-          capacityWh: 24,
-
-          evidence: {
-            sourceIds: [
-              "lenovo-t480-psref",
-              "lenovo-t480-hmm",
-            ],
-            notes:
-              "Lenovo documents an integrated 24 Wh battery plus a swappable external battery. The external battery is user-removable.",
-          },
-        },
-
-        evidence: {
-          sourceIds: [
-            "lenovo-t480-psref",
-            "lenovo-t480-hmm",
-          ],
-        },
-      },
-
-      {
-        id: "m2-2280-primary-storage",
-
-        label: "M.2 2280 primary storage configuration",
-
-        conditions: [
-          "Primary storage uses the M.2 2280 slot.",
-          "An optional M.2 2242 drive may be present in the WWAN slot on applicable configurations.",
-        ],
-
-        memory: {
-          status: "yes",
-          type: "DDR4-2400",
-          formFactor: "SO-DIMM",
-          slots: 2,
-          maxTotalGb: 32,
-          supportedSpeedsMts: [2400],
-
-          evidence: {
-            sourceIds: [
-              "lenovo-t480-psref",
-              "lenovo-t480-hmm",
-            ],
-            notes:
-              "Lenovo documents two DDR4 SO-DIMM sockets and a maximum supported memory configuration of 32 GB.",
-          },
-        },
-
-        storage: {
-          status: "conditional",
-          physicalSlots: 1,
-
-          options: [
-            {
-              formFactor: "M.2 2280",
-              interface: "PCIe NVMe",
-              generation: "PCIe 3.0 x4",
-              replaceable: "yes",
-
-              evidence: {
-                sourceIds: [
-                  "lenovo-t480-psref",
-                  "lenovo-t480-hmm",
-                ],
-                notes:
-                  "Lenovo documents an M.2 2280 PCIe NVMe primary storage configuration.",
-              },
-            },
-            {
-              formFactor: "M.2 2242",
-              interface: "PCIe NVMe",
-              generation: "PCIe 3.0 x2",
-              maxCapacityGb: 128,
-              replaceable: "yes",
-
-              evidence: {
-                sourceIds: [
-                  "lenovo-t480-psref",
-                  "lenovo-t480-hmm",
-                ],
-                notes:
-                  "Lenovo documents an optional M.2 2242 PCIe NVMe drive in the WWAN slot as second storage on applicable configurations; it is mutually exclusive with WWAN.",
-              },
-            },
-          ],
-
-          evidence: {
-            sourceIds: [
-              "lenovo-t480-psref",
-              "lenovo-t480-hmm",
-            ],
-            notes:
-              "The primary storage uses the M.2 2280 slot in this configuration. A separate M.2 2242 drive may be used in the WWAN slot on supported systems.",
-          },
-        },
-
-        battery: {
-          status: "yes",
-          removable: true,
-          replaceable: true,
-          capacityWh: 24,
-
-          evidence: {
-            sourceIds: [
-              "lenovo-t480-psref",
-              "lenovo-t480-hmm",
-            ],
-            notes:
-              "Lenovo documents an integrated 24 Wh battery plus a swappable external battery.",
-          },
-        },
-
-        evidence: {
-          sourceIds: [
-            "lenovo-t480-psref",
-            "lenovo-t480-hmm",
-          ],
-        },
-      },
-    ],
-
     lastVerifiedAt: "2026-09-23",
   },
+
+  draftLaptop("lenovo-thinkpad-t480", "Lenovo", "ThinkPad T", "ThinkPad T480"),
+  draftLaptop("lenovo-thinkpad-t14-gen1-intel", "Lenovo", "ThinkPad T", "ThinkPad T14 Gen 1 Intel"),
+  draftLaptop("lenovo-thinkpad-t14-gen1-amd", "Lenovo", "ThinkPad T", "ThinkPad T14 Gen 1 AMD"),
+  draftLaptop("lenovo-thinkpad-t14-gen3-amd", "Lenovo", "ThinkPad T", "ThinkPad T14 Gen 3 AMD"),
+  draftLaptop("lenovo-thinkpad-t14-gen3-intel", "Lenovo", "ThinkPad T", "ThinkPad T14 Gen 3 Intel"),
+  draftLaptop("lenovo-thinkpad-t14-gen4-amd", "Lenovo", "ThinkPad T", "ThinkPad T14 Gen 4 AMD"),
+  draftLaptop("lenovo-thinkpad-t14-gen4-intel", "Lenovo", "ThinkPad T", "ThinkPad T14 Gen 4 Intel"),
+  draftLaptop("lenovo-thinkpad-t15-gen2", "Lenovo", "ThinkPad T", "ThinkPad T15 Gen 2"),
+  draftLaptop("lenovo-thinkpad-e14-gen2-intel", "Lenovo", "ThinkPad E", "ThinkPad E14 Gen 2 Intel"),
+  draftLaptop("lenovo-thinkpad-e14-gen2-amd", "Lenovo", "ThinkPad E", "ThinkPad E14 Gen 2 AMD"),
+  draftLaptop("lenovo-thinkpad-e14-gen3-amd", "Lenovo", "ThinkPad E", "ThinkPad E14 Gen 3 AMD"),
+  draftLaptop("lenovo-thinkpad-e14-gen3-intel", "Lenovo", "ThinkPad E", "ThinkPad E14 Gen 3 Intel"),
+  draftLaptop("lenovo-thinkpad-l14-gen2-intel", "Lenovo", "ThinkPad L", "ThinkPad L14 Gen 2 Intel"),
+  draftLaptop("lenovo-thinkpad-l14-gen2-amd", "Lenovo", "ThinkPad L", "ThinkPad L14 Gen 2 AMD"),
+  draftLaptop("lenovo-thinkpad-x1-carbon-gen9", "Lenovo", "ThinkPad X1", "ThinkPad X1 Carbon Gen 9"),
+  draftLaptop("lenovo-thinkpad-x1-carbon-gen10", "Lenovo", "ThinkPad X1", "ThinkPad X1 Carbon Gen 10"),
+  draftLaptop("lenovo-thinkpad-x1-extreme-gen2", "Lenovo", "ThinkPad X1", "ThinkPad X1 Extreme Gen 2"),
+  draftLaptop("lenovo-thinkpad-p15-gen1", "Lenovo", "ThinkPad P", "ThinkPad P15 Gen 1"),
+
+  // ============================================================
+  // HP — 20
+  // ============================================================
+
+  draftLaptop("hp-elitebook-840-g8", "HP", "EliteBook", "EliteBook 840 G8"),
+  draftLaptop("hp-elitebook-850-g8", "HP", "EliteBook", "EliteBook 850 G8"),
+  draftLaptop("hp-elitebook-830-g8", "HP", "EliteBook", "EliteBook 830 G8"),
+  draftLaptop("hp-elitebook-840-g7", "HP", "EliteBook", "EliteBook 840 G7"),
+  draftLaptop("hp-elitebook-850-g7", "HP", "EliteBook", "EliteBook 850 G7"),
+  draftLaptop("hp-probook-440-g8", "HP", "ProBook", "ProBook 440 G8"),
+  draftLaptop("hp-probook-450-g8", "HP", "ProBook", "ProBook 450 G8"),
+  draftLaptop("hp-probook-455-g8", "HP", "ProBook", "ProBook 455 G8"),
+  draftLaptop("hp-probook-440-g9", "HP", "ProBook", "ProBook 440 G9"),
+  draftLaptop("hp-probook-450-g9", "HP", "ProBook", "ProBook 450 G9"),
+  draftLaptop("hp-pavilion-15-eg", "HP", "Pavilion", "Pavilion 15-eg"),
+  draftLaptop("hp-pavilion-15-eh", "HP", "Pavilion", "Pavilion 15-eh"),
+  draftLaptop("hp-pavilion-14-dv", "HP", "Pavilion", "Pavilion 14-dv"),
+  draftLaptop("hp-envy-13-ba", "HP", "Envy", "Envy 13-ba"),
+  draftLaptop("hp-envy-15-ep", "HP", "Envy", "Envy 15-ep"),
+  draftLaptop("hp-omen-15-en", "HP", "OMEN", "OMEN 15-en"),
+  draftLaptop("hp-omen-16-c", "HP", "OMEN", "OMEN 16-c"),
+  draftLaptop("hp-victus-15-fb", "HP", "Victus", "Victus 15-fb"),
+  draftLaptop("hp-victus-16-e", "HP", "Victus", "Victus 16-e"),
+  draftLaptop("hp-zbook-firefly-14-g8", "HP", "ZBook", "ZBook Firefly 14 G8"),
+
+  // ============================================================
+  // ASUS — 15
+  // ============================================================
+
+  draftLaptop("asus-vivobook-15-x1500ea", "ASUS", "VivoBook", "VivoBook 15 X1500EA"),
+  draftLaptop("asus-vivobook-15-x1502za", "ASUS", "VivoBook", "VivoBook 15 X1502ZA"),
+  draftLaptop("asus-vivobook-14-x1400ea", "ASUS", "VivoBook", "VivoBook 14 X1400EA"),
+  draftLaptop("asus-vivobook-14-x1402za", "ASUS", "VivoBook", "VivoBook 14 X1402ZA"),
+  draftLaptop("asus-vivobook-pro-15-oled", "ASUS", "VivoBook Pro", "VivoBook Pro 15 OLED"),
+  draftLaptop("asus-zenbook-14-ux425", "ASUS", "ZenBook", "ZenBook 14 UX425"),
+  draftLaptop("asus-zenbook-14-ux435", "ASUS", "ZenBook", "ZenBook 14 UX435"),
+  draftLaptop("asus-zenbook-14-ux3402", "ASUS", "ZenBook", "ZenBook 14 UX3402"),
+  draftLaptop("asus-tuf-gaming-a15-fa506", "ASUS", "TUF Gaming", "TUF Gaming A15 FA506"),
+  draftLaptop("asus-tuf-gaming-a15-fa507", "ASUS", "TUF Gaming", "TUF Gaming A15 FA507"),
+  draftLaptop("asus-tuf-gaming-f15-fx506", "ASUS", "TUF Gaming", "TUF Gaming F15 FX506"),
+  draftLaptop("asus-tuf-gaming-f15-fx507", "ASUS", "TUF Gaming", "TUF Gaming F15 FX507"),
+  draftLaptop("asus-rog-strix-g15-g513", "ASUS", "ROG Strix", "ROG Strix G15 G513"),
+  draftLaptop("asus-rog-zephyrus-g14-ga401", "ASUS", "ROG Zephyrus", "ROG Zephyrus G14 GA401"),
+  draftLaptop("asus-rog-zephyrus-g15-ga503", "ASUS", "ROG Zephyrus", "ROG Zephyrus G15 GA503"),
+
+  // ============================================================
+  // ACER — 10
+  // ============================================================
+
+  draftLaptop("acer-aspire-5-a515-56", "Acer", "Aspire", "Aspire 5 A515-56"),
+  draftLaptop("acer-aspire-5-a515-45", "Acer", "Aspire", "Aspire 5 A515-45"),
+  draftLaptop("acer-aspire-5-a515-57", "Acer", "Aspire", "Aspire 5 A515-57"),
+  draftLaptop("acer-aspire-3-a315-58", "Acer", "Aspire", "Aspire 3 A315-58"),
+  draftLaptop("acer-aspire-3-a315-59", "Acer", "Aspire", "Aspire 3 A315-59"),
+  draftLaptop("acer-swift-3-sf314-43", "Acer", "Swift", "Swift 3 SF314-43"),
+  draftLaptop("acer-swift-3-sf314-511", "Acer", "Swift", "Swift 3 SF314-511"),
+  draftLaptop("acer-nitro-5-an515-57", "Acer", "Nitro", "Nitro 5 AN515-57"),
+  draftLaptop("acer-nitro-5-an515-58", "Acer", "Nitro", "Nitro 5 AN515-58"),
+  draftLaptop("acer-predator-helios-300-ph315-54", "Acer", "Predator", "Predator Helios 300 PH315-54"),
+
+  // ============================================================
+  // MSI — 5
+  // ============================================================
+
+  draftLaptop("msi-modern-14-b11", "MSI", "Modern", "Modern 14 B11"),
+  draftLaptop("msi-modern-15-b11", "MSI", "Modern", "Modern 15 B11"),
+  draftLaptop("msi-gf63-thin-11", "MSI", "GF63 Thin", "GF63 Thin 11"),
+  draftLaptop("msi-katana-gf66", "MSI", "Katana", "Katana GF66"),
+  draftLaptop("msi-katana-15-b12", "MSI", "Katana", "Katana 15 B12"),
+
+  // ============================================================
+  // APPLE — 8
+  // ============================================================
+
+  draftLaptop("apple-macbook-air-intel-2020", "Apple", "MacBook Air", "MacBook Air Intel 2020"),
+  draftLaptop("apple-macbook-air-m1-2020", "Apple", "MacBook Air", "MacBook Air M1 2020"),
+  draftLaptop("apple-macbook-air-m2-2022", "Apple", "MacBook Air", "MacBook Air M2 2022"),
+  draftLaptop("apple-macbook-pro-13-intel-2020", "Apple", "MacBook Pro", "MacBook Pro 13 Intel 2020"),
+  draftLaptop("apple-macbook-pro-13-m1-2020", "Apple", "MacBook Pro", "MacBook Pro 13 M1 2020"),
+  draftLaptop("apple-macbook-pro-14-m1-2021", "Apple", "MacBook Pro", "MacBook Pro 14 M1 2021"),
+  draftLaptop("apple-macbook-pro-16-intel-2019", "Apple", "MacBook Pro", "MacBook Pro 16 Intel 2019"),
+  draftLaptop("apple-macbook-pro-16-m1-2021", "Apple", "MacBook Pro", "MacBook Pro 16 M1 2021"),
+
+  // ============================================================
+  // FRAMEWORK — 2
+  // ============================================================
+
+  draftLaptop(
+    "framework-laptop-13-11th-gen",
+    "Framework",
+    "Laptop 13",
+    "Laptop 13 11th Gen",
+  ),
+
+  draftLaptop(
+    "framework-laptop-13-12th-gen",
+    "Framework",
+    "Laptop 13",
+    "Laptop 13 12th Gen",
+  ),
 ];
