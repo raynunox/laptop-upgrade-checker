@@ -10,13 +10,12 @@ export default function CheckerPage() {
   const [hasSearched, setHasSearched] = useState(false);
 
   const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault(); // Mencegah halaman refresh saat submit
+    e.preventDefault();
     if (!searchQuery.trim()) return;
 
     setIsLoading(true);
     setHasSearched(true);
 
-    // Mencari data di tabel 'laptops' yang modelnya mirip dengan ketikan user
     const { data, error } = await supabase
       .from("laptops")
       .select("*")
@@ -77,11 +76,55 @@ export default function CheckerPage() {
               <div className="text-center py-10 text-slate-500">Searching database...</div>
             ) : results.length > 0 ? (
               results.map((laptop) => (
-                <div key={laptop.id} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                  <h3 className="text-xl font-bold text-slate-800">{laptop.brand} {laptop.model}</h3>
-                  {/* Menampilkan raw JSON dari kolom configurations (bisa dipercantik nanti) */}
-                  <div className="mt-4 p-4 bg-slate-50 rounded-lg text-sm text-slate-600 font-mono whitespace-pre-wrap">
-                    {JSON.stringify(laptop.configurations, null, 2)}
+                <div key={laptop.id} className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
+                  <h3 className="text-2xl font-bold text-slate-900 mb-6">{laptop.brand} {laptop.model}</h3>
+                  
+                  <div className="space-y-6">
+                    {laptop.configurations?.map((config: any, index: number) => (
+                      <div key={index} className="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                        <h4 className="font-semibold text-slate-800 mb-2">
+                          {config.label || "Standard Configuration"}
+                        </h4>
+                        {config.notes && (
+                          <p className="text-sm text-slate-500 mb-4 bg-blue-50 p-3 rounded-lg border border-blue-100">
+                            💡 {config.notes}
+                          </p>
+                        )}
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                          {/* RAM Card */}
+                          <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Memory (RAM)</span>
+                            <div className="mt-2 space-y-1">
+                              <p className="font-medium text-slate-800">
+                                Upgradeable: {config.memory?.status === 'yes' ? '✅ Yes' : '❌ No'}
+                              </p>
+                              {config.memory?.onboardGb && (
+                                <p className="text-sm text-slate-600">Onboard RAM: {config.memory.onboardGb}GB</p>
+                              )}
+                              {config.memory?.maxGb && (
+                                <p className="text-sm text-slate-600">Max Capacity: {config.memory.maxGb}GB</p>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Storage Card */}
+                          <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+                            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Storage (SSD)</span>
+                            <div className="mt-2 space-y-1">
+                              <p className="font-medium text-slate-800">
+                                Upgradeable: {config.storage?.status === 'yes' ? '✅ Yes' : '❌ No'}
+                              </p>
+                              {config.storage?.options && (
+                                <p className="text-sm text-slate-600">
+                                  Slots: {config.storage.options.length} available
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               ))
