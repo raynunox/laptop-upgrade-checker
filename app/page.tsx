@@ -1,29 +1,48 @@
-import Link from "next/link";
-
-export default function Home() {
+export default function CheckerPage() {
   return (
-    <main className="min-h-screen flex items-center justify-center p-4 md:p-8">
-      <div className="mx-auto max-w-2xl w-full bg-white rounded-2xl shadow-xl p-8 md:p-12 text-center border border-gray-100">
+    <main className="min-h-screen bg-slate-50 p-6 md:p-12">
+      <div className="max-w-3xl mx-auto space-y-8">
         
-        <div className="inline-block px-4 py-1.5 mb-6 text-sm font-semibold text-blue-700 bg-blue-50 rounded-full border border-blue-100">
-          Hardware Compatibility Tool
+        {/* 1. Hero Section */}
+        <div className="text-center space-y-4 mt-10">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
+            Laptop Upgrade Checker
+          </h1>
+          <p className="text-lg text-slate-500 max-w-xl mx-auto">
+            Stop guessing before buying PC parts. Search your laptop model to check its maximum RAM and SSD upgrade limits.
+          </p>
         </div>
 
-        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 text-gray-900">
-          Can I Upgrade My Laptop?
-        </h1>
+        {/* 2. Search Box */}
+        <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
+          <label htmlFor="search" className="block text-sm font-semibold text-slate-700 mb-3">
+            Enter Laptop Model
+          </label>
+          <div className="flex flex-col md:flex-row gap-4">
+            <input
+              id="search"
+              type="text"
+              placeholder="e.g., ThinkPad T480, ROG Zephyrus..."
+              className="flex-1 px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+            />
+            <button className="bg-blue-600 text-white px-8 py-3 rounded-xl hover:bg-blue-700 font-semibold transition-colors shadow-sm">
+              Search
+            </button>
+          </div>
+        </div>
 
-        <p className="mt-4 text-lg text-gray-500 max-w-lg mx-auto mb-10">
-          Stop guessing before buying PC parts. Find out the exact maximum RAM and SSD capacity your laptop supports.
-        </p>
+        {/* 3. Placeholder Result Card */}
+        <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 border-dashed">
+          <div className="text-center py-10">
+            <div className="text-slate-400 mb-2">
+              <svg className="w-12 h-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+              </svg>
+            </div>
+            <p className="text-slate-500">Laptop specification results will appear here.</p>
+          </div>
+        </div>
 
-        <Link
-          href="/checker"
-          className="inline-flex items-center justify-center rounded-xl bg-gray-900 px-8 py-4 text-base font-semibold text-white shadow-md transition-all duration-200 hover:bg-gray-800 hover:-translate-y-0.5 hover:shadow-lg"
-        >
-          Check My Laptop Now
-        </Link>
-        
       </div>
     </main>
   );
