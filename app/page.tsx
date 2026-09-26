@@ -16,13 +16,10 @@ export default function CheckerPage() {
     setIsLoading(true);
     setHasSearched(true);
 
-    // Memecah kata kunci berdasarkan spasi (misal: "asus rog" jadi ["asus", "rog"])
     const searchTerms = searchQuery.trim().split(/\s+/);
     
-    // Inisiasi kueri dasar
     let query = supabase.from("laptops").select("*");
 
-    // Looping kueri: setiap kata harus ada di brand ATAU model
     searchTerms.forEach(term => {
       query = query.or(`brand.ilike.%${term}%,model.ilike.%${term}%`);
     });
@@ -102,11 +99,11 @@ export default function CheckerPage() {
                               <p className="font-medium text-slate-800">
                                 Upgradeable: {config.memory?.status === 'yes' ? '✅ Yes' : '❌ No'}
                               </p>
-                              {config.memory?.onboardGb && (
+                              {config.memory?.onboardGb > 0 && (
                                 <p className="text-sm text-slate-600">Onboard RAM: {config.memory.onboardGb}GB</p>
                               )}
-                              {config.memory?.maxGb && (
-                                <p className="text-sm text-slate-600">Max Capacity: {config.memory.maxGb}GB</p>
+                              {config.memory?.maxTotalGb && (
+                                <p className="text-sm text-slate-600">Max Capacity: {config.memory.maxTotalGb}GB</p>
                               )}
                             </div>
                           </div>
