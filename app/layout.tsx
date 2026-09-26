@@ -8,6 +8,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Laptop Upgrade Checker",
   description: "Find out whether your laptop can be upgraded.",
+  verification: {
+    google: "wSMx9XJV6Hrs6vRctIWcLN1mTDLhcoTxBtGbKcQonXw",
+  },
 };
 
 export default function RootLayout({
