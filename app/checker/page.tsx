@@ -1,17 +1,16 @@
 /**
- * LAPTOP UPGRADE CHECKER - FIXED VERSION
+ * LAPTOP UPGRADE CHECKER - SUPABASE INTEGRATED
  * 
- * Perubahan UI:
- * ✅ Modern Card-based layout
- * ✅ Premium form inputs with focus rings
- * ✅ Better visual hierarchy for steps
- * ✅ Highlighted result sections
+ * Perubahan:
+ * ✅ Data ditarik dinamis dari Supabase, bukan file statis lokal
+ * ✅ Menambahkan state loading saat fetching data
+ * ✅ UI dan logika wizard dipertahankan utuh
  */
 
 "use client";
 
 import { useMemo, useState, useEffect } from "react";
-import { laptops } from "../../data/laptops";
+import { supabase } from "../../lib/supabase";
 import {
   checkRamCompatibility,
   checkStorageCompatibility,
@@ -27,6 +26,9 @@ export default function CheckerPage() {
   // STATE MANAGEMENT
   // ============================================================
   
+  const [laptops, setLaptops] = useState<any[]>([]);
+  const [isLoadingData, setIsLoadingData] = useState(true);
+
   const [brand, setBrand] = useState("");
   const [model, setModel] = useState("");
   const [modelSearch, setModelSearch] = useState("");
@@ -39,6 +41,26 @@ export default function CheckerPage() {
   const [storageCapacity, setStorageCapacity] = useState("");
 
   const [hasChecked, setHasChecked] = useState(false);
+
+  // ============================================================
+  // FETCH DATA FROM SUPABASE
+  // ============================================================
+
+  useEffect(() => {
+    async function fetchLaptops() {
+      setIsLoadingData(true);
+      const { data, error } = await supabase.from("laptops").select("*");
+      
+      if (error) {
+        console.error("Error fetching laptops from Supabase:", error);
+      } else {
+        setLaptops(data || []);
+      }
+      setIsLoadingData(false);
+    }
+
+    fetchLaptops();
+  }, []);
 
   // ============================================================
   // LOAD SAVED SELECTION (localStorage)
@@ -77,7 +99,7 @@ export default function CheckerPage() {
 
   const brands = useMemo(() => {
     return [...new Set(laptops.map((laptop) => laptop.brand))].sort();
-  }, []);
+  }, [laptops]);
 
   // ============================================================
   // COMPUTED: Models (filtered by brand + search)
@@ -95,7 +117,7 @@ export default function CheckerPage() {
     }
 
     return filtered.sort((a, b) => a.model.localeCompare(b.model));
-  }, [brand, modelSearch]);
+  }, [brand, modelSearch, laptops]);
 
   // ============================================================
   // COMPUTED: Selected Laptop
@@ -105,7 +127,7 @@ export default function CheckerPage() {
     return laptops.find(
       (laptop) => laptop.brand === brand && laptop.model === model
     );
-  }, [brand, model]);
+  }, [brand, model, laptops]);
 
   // ============================================================
   // COMPUTED: Configurations
@@ -121,7 +143,7 @@ export default function CheckerPage() {
     if (!selectedLaptop) return null;
 
     return selectedLaptop.configurations.find(
-      (configuration) => configuration.id === configurationId
+      (configuration: any) => configuration.id === configurationId
     );
   }, [selectedLaptop, configurationId]);
 
@@ -135,7 +157,7 @@ export default function CheckerPage() {
     }
 
     return selectedConfiguration.storage.options.find(
-      (option, index) =>
+      (option: any, index: number) =>
         `${option.formFactor}-${option.interface}-${index}` === storageOptionId
     );
   }, [selectedConfiguration, storageOptionId]);
@@ -288,85 +310,92 @@ export default function CheckerPage() {
             <h2 className="text-xl font-bold text-gray-900">Device Selection</h2>
           </div>
 
-          <div className="space-y-5">
-            {/* BRAND */}
-            <div>
-              <label className="mb-1.5 block text-sm font-medium text-gray-700">Brand</label>
-              <select
-                value={brand}
-                onChange={(e) => handleBrandChange(e.target.value)}
-                className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-              >
-                <option value="">Select brand</option>
-                {brands.map((item) => (
-                  <option key={item} value={item}>{item}</option>
-                ))}
-              </select>
+          {isLoadingData ? (
+            <div className="py-8 text-center">
+              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+              <p className="mt-4 text-sm font-medium text-gray-500">Loading database...</p>
             </div>
-
-            {/* MODEL */}
-            <div>
-              <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                Model {models.length > 0 && <span className="text-gray-400 font-normal">({models.length} available)</span>}
-              </label>
-              
-              {brand && (
-                <input
-                  type="text"
-                  placeholder="Search specific model..."
-                  value={modelSearch}
-                  onChange={(e) => setModelSearch(e.target.value)}
-                  className="mb-2 w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-                />
-              )}
-
-              <select
-                value={model}
-                onChange={(e) => handleModelChange(e.target.value)}
-                disabled={!brand}
-                className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 transition-colors disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-              >
-                <option value="">{brand ? "Select your model" : "Select brand first"}</option>
-                {models.map((item) => (
-                  <option key={item.id} value={item.model}>{item.model}</option>
-                ))}
-              </select>
-
-              {brand && models.length === 0 && modelSearch && (
-                <p className="mt-2 text-sm text-red-500">
-                  No models found matching "{modelSearch}"
-                </p>
-              )}
-            </div>
-
-            {/* CONFIGURATION */}
-            {selectedLaptop && configurations.length > 0 && (
-              <div className="pt-2">
-                <label className="mb-1.5 block text-sm font-medium text-gray-700">Factory Configuration</label>
+          ) : (
+            <div className="space-y-5 animate-in fade-in duration-500">
+              {/* BRAND */}
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-gray-700">Brand</label>
                 <select
-                  value={configurationId}
-                  onChange={(e) => handleConfigurationChange(e.target.value)}
+                  value={brand}
+                  onChange={(e) => handleBrandChange(e.target.value)}
                   className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                 >
-                  <option value="">Select configuration</option>
-                  {configurations.map((config) => (
-                    <option key={config.id} value={config.id}>{config.label}</option>
+                  <option value="">Select brand</option>
+                  {brands.map((item) => (
+                    <option key={item} value={item}>{item}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* MODEL */}
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-gray-700">
+                  Model {models.length > 0 && <span className="text-gray-400 font-normal">({models.length} available)</span>}
+                </label>
+                
+                {brand && (
+                  <input
+                    type="text"
+                    placeholder="Search specific model..."
+                    value={modelSearch}
+                    onChange={(e) => setModelSearch(e.target.value)}
+                    className="mb-2 w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  />
+                )}
+
+                <select
+                  value={model}
+                  onChange={(e) => handleModelChange(e.target.value)}
+                  disabled={!brand}
+                  className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 transition-colors disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                >
+                  <option value="">{brand ? "Select your model" : "Select brand first"}</option>
+                  {models.map((item: any) => (
+                    <option key={item.id} value={item.model}>{item.model}</option>
                   ))}
                 </select>
 
-                {selectedConfiguration?.conditions && selectedConfiguration.conditions.length > 0 && (
-                  <div className="mt-4 rounded-xl border border-yellow-200 bg-yellow-50 p-4">
-                    <p className="text-sm font-semibold text-yellow-800">Configuration Notes</p>
-                    <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-yellow-700">
-                      {selectedConfiguration.conditions.map((condition) => (
-                        <li key={condition}>{condition}</li>
-                      ))}
-                    </ul>
-                  </div>
+                {brand && models.length === 0 && modelSearch && (
+                  <p className="mt-2 text-sm text-red-500">
+                    No models found matching "{modelSearch}"
+                  </p>
                 )}
               </div>
-            )}
-          </div>
+
+              {/* CONFIGURATION */}
+              {selectedLaptop && configurations.length > 0 && (
+                <div className="pt-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                  <label className="mb-1.5 block text-sm font-medium text-gray-700">Factory Configuration</label>
+                  <select
+                    value={configurationId}
+                    onChange={(e) => handleConfigurationChange(e.target.value)}
+                    className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  >
+                    <option value="">Select configuration</option>
+                    {configurations.map((config: any) => (
+                      <option key={config.id} value={config.id}>{config.label}</option>
+                    ))}
+                  </select>
+
+                  {selectedConfiguration?.conditions && selectedConfiguration.conditions.length > 0 && (
+                    <div className="mt-4 rounded-xl border border-yellow-200 bg-yellow-50 p-4">
+                      <p className="text-sm font-semibold text-yellow-800">Configuration Notes</p>
+                      <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-yellow-700">
+                        {selectedConfiguration.conditions.map((condition: string) => (
+                          <li key={condition}>{condition}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </section>
 
         {/* COMPONENT SELECTION */}
@@ -449,7 +478,7 @@ export default function CheckerPage() {
                   className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                 >
                   <option value="">Select storage slot</option>
-                  {selectedConfiguration.storage.options.map((option, index) => (
+                  {selectedConfiguration.storage.options.map((option: any, index: number) => (
                     <option key={`${option.formFactor}-${option.interface}-${index}`} value={`${option.formFactor}-${option.interface}-${index}`}>
                       {option.formFactor} · {option.interface}
                     </option>
@@ -528,7 +557,7 @@ export default function CheckerPage() {
           <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
             <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4">Verified Sources</h2>
             <div className="grid gap-3 sm:grid-cols-2">
-              {selectedLaptop.sources.map((source) => (
+              {selectedLaptop.sources.map((source: any) => (
                 <a
                   key={source.id}
                   href={source.url}
