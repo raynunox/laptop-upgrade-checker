@@ -19,7 +19,7 @@ export default function CheckerPage() {
     const { data, error } = await supabase
       .from("laptops")
       .select("*")
-      .ilike("model", `%${searchQuery}%`)
+      .or(`brand.ilike.%${searchQuery}%,model.ilike.%${searchQuery}%`)
       .limit(10);
 
     if (error) {
@@ -35,7 +35,6 @@ export default function CheckerPage() {
     <main className="min-h-screen bg-slate-50 p-6 md:p-12">
       <div className="max-w-3xl mx-auto space-y-8">
         
-        {/* 1. Hero Section */}
         <div className="text-center space-y-4 mt-10">
           <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
             Laptop Upgrade Checker
@@ -45,7 +44,6 @@ export default function CheckerPage() {
           </p>
         </div>
 
-        {/* 2. Search Box */}
         <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
           <label htmlFor="search" className="block text-sm font-semibold text-slate-700 mb-3">
             Enter Laptop Model
@@ -69,7 +67,6 @@ export default function CheckerPage() {
           </form>
         </div>
 
-        {/* 3. Result Section */}
         {hasSearched ? (
           <div className="space-y-4">
             {isLoading ? (
@@ -92,7 +89,6 @@ export default function CheckerPage() {
                         )}
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                          {/* RAM Card */}
                           <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
                             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Memory (RAM)</span>
                             <div className="mt-2 space-y-1">
@@ -108,7 +104,6 @@ export default function CheckerPage() {
                             </div>
                           </div>
 
-                          {/* Storage Card */}
                           <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
                             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Storage (SSD)</span>
                             <div className="mt-2 space-y-1">
