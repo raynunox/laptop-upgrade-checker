@@ -598,7 +598,7 @@ export default function CheckerPage() {
             <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4">Verified Sources</h2>
             <div className="grid gap-3 sm:grid-cols-2">
               {selectedLaptop.sources.map((source: any) => (
-                
+                <a
                   key={source.id}
                   href={source.url}
                   target="_blank"
