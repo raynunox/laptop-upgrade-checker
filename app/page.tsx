@@ -16,11 +16,18 @@ export default function CheckerPage() {
     setIsLoading(true);
     setHasSearched(true);
 
-    const { data, error } = await supabase
-      .from("laptops")
-      .select("*")
-      .or(`brand.ilike.%${searchQuery}%,model.ilike.%${searchQuery}%`)
-      .limit(10);
+    // Memecah kata kunci berdasarkan spasi (misal: "asus rog" jadi ["asus", "rog"])
+    const searchTerms = searchQuery.trim().split(/\s+/);
+    
+    // Inisiasi kueri dasar
+    let query = supabase.from("laptops").select("*");
+
+    // Looping kueri: setiap kata harus ada di brand ATAU model
+    searchTerms.forEach(term => {
+      query = query.or(`brand.ilike.%${term}%,model.ilike.%${term}%`);
+    });
+
+    const { data, error } = await query.limit(10);
 
     if (error) {
       console.error("Error fetching data:", error);
