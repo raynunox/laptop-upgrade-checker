@@ -6,8 +6,9 @@ import Footer from "../components/Footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Laptop Upgrade Checker",
-  description: "Find out whether your laptop can be upgraded.",
+  title: "Laptop Upgrade Checker | Check RAM & SSD Upgrades",
+  description:
+    "Check whether your laptop can be upgraded with more RAM or SSD storage. Search your laptop model and find documented upgrade limits and compatibility.",
   verification: {
     google: "wSMx9XJV6Hrs6vRctIWcLN1mTDLhcoTxBtGbKcQonXw",
   },
