@@ -1,9 +1,9 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "About | Laptop Upgrade Checker",
+  title: "About Laptop Upgrade Checker | RAM & SSD Upgrade Tool",
   description:
-    "Learn what Laptop Upgrade Checker does and why we built a free tool to check RAM and SSD upgrade limits for laptops.",
+    "Learn about Laptop Upgrade Checker, a free tool for checking laptop RAM and SSD upgrade compatibility, supported capacities, and storage options.",
 };
 
 export default function AboutPage() {
