@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export const metadata = {
   title: "Privacy Policy | Laptop Upgrade Checker",
   description:
@@ -6,9 +8,12 @@ export const metadata = {
 
 export default function PrivacyPage() {
   return (
-    <main className="min-h-screen bg-slate-50 p-6 md:p-12">
+    <main className="bg-slate-50 p-6 md:p-12">
       <div className="max-w-3xl mx-auto space-y-8">
         <div className="text-center space-y-4 mt-10">
+          <Link href="/" className="text-sm font-semibold text-blue-600 hover:underline">
+            ← Back to Laptop Upgrade Checker
+          </Link>
           <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
             Privacy Policy
           </h1>
