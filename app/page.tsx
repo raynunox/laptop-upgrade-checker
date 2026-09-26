@@ -36,7 +36,7 @@ export default function CheckerPage() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-50 p-6 md:p-12">
+    <main className="bg-slate-50 p-6 md:p-12">
       <div className="max-w-3xl mx-auto space-y-8">
         
         <div className="text-center space-y-4 mt-10">
