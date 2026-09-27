@@ -66,27 +66,32 @@ export default function LaptopGuidesClient({ laptops }: Props) {
 
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-12 transition-colors duration-300 dark:bg-slate-950 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-7xl">
 
         {/* HERO */}
-        <section className="text-center">
-          <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-xs font-bold uppercase tracking-wider text-blue-700 dark:border-blue-900/60 dark:bg-blue-950/40 dark:text-blue-400">
-            <span className="h-2 w-2 rounded-full bg-blue-500" />
-            Laptop Upgrade Database
+        <section className="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white px-6 py-14 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:px-10">
+          <div className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl" />
+          <div className="absolute -bottom-32 -right-20 h-80 w-80 rounded-full bg-cyan-500/10 blur-3xl" />
+
+          <div className="relative">
+            <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-xs font-bold uppercase tracking-wider text-blue-700 dark:border-blue-900/60 dark:bg-blue-950/40 dark:text-blue-400">
+              <span className="h-2 w-2 rounded-full bg-blue-500" />
+              Laptop Upgrade Database
+            </div>
+
+            <h1 className="mt-6 text-4xl font-black tracking-tight text-slate-900 dark:text-white sm:text-5xl">
+              Laptop Upgrade Guides
+            </h1>
+
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-600 dark:text-slate-400 sm:text-lg">
+              Explore documented RAM, SSD, battery, and hardware upgrade
+              information for popular laptop models.
+            </p>
           </div>
-
-          <h1 className="mt-6 text-4xl font-black tracking-tight text-slate-900 dark:text-white sm:text-5xl">
-            Laptop Upgrade Guides
-          </h1>
-
-          <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-600 dark:text-slate-400 sm:text-lg">
-            Browse documented RAM, SSD, battery, and hardware upgrade
-            information for supported laptop models.
-          </p>
         </section>
 
         {/* STATS */}
-        <section className="mx-auto mt-10 grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-3">
+        <section className="mx-auto mt-8 grid max-w-4xl grid-cols-1 gap-3 sm:grid-cols-3">
           <div className="rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <p className="text-3xl font-black text-slate-900 dark:text-white">
               {laptops.length}
@@ -106,7 +111,7 @@ export default function LaptopGuidesClient({ laptops }: Props) {
           </div>
 
           <div className="rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <p className="text-3xl font-black text-blue-600 dark:text-blue-400">
+            <p className="text-3xl font-black text-cyan-600 dark:text-cyan-400">
               SSD
             </p>
             <p className="mt-1 text-sm text-slate-500">
@@ -124,11 +129,12 @@ export default function LaptopGuidesClient({ laptops }: Props) {
             </p>
 
             <h2 className="mt-2 text-2xl font-black text-slate-900 dark:text-white">
-              All Laptop Models
+              Find Your Laptop
             </h2>
 
             <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-              Search or filter a laptop model to view its upgrade guide.
+              Search by brand, model, or model number to view upgrade
+              compatibility.
             </p>
           </div>
 
@@ -196,9 +202,10 @@ export default function LaptopGuidesClient({ laptops }: Props) {
           </div>
 
           {/* RESULTS */}
-          <div className="mt-6">
+          <div className="mt-8">
             {filteredLaptops.length > 0 ? (
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+
                 {filteredLaptops.map((laptop) => {
                   const slug = slugify(
                     `${laptop.brand}-${laptop.model}`
@@ -208,26 +215,53 @@ export default function LaptopGuidesClient({ laptops }: Props) {
                     <Link
                       key={laptop.id}
                       href={`/laptop/${slug}`}
-                      className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-1 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-500/10 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-blue-700"
+                      className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-blue-300 hover:shadow-2xl hover:shadow-blue-500/10 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-blue-700"
                     >
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-xl dark:bg-slate-800">
-                          💻
+
+                      {/* LAPTOP VISUAL */}
+                      <div className="relative h-52 overflow-hidden bg-gradient-to-br from-slate-100 via-slate-50 to-blue-50 dark:from-slate-800 dark:via-slate-900 dark:to-blue-950/30">
+
+                        {/* decorative glow */}
+                        <div className="absolute left-1/2 top-1/2 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-500/10 blur-3xl transition duration-500 group-hover:bg-blue-500/20" />
+
+                        {/* laptop illustration */}
+                        <div className="absolute left-1/2 top-1/2 w-52 -translate-x-1/2 -translate-y-1/2 transition duration-500 group-hover:scale-105">
+
+                          {/* screen */}
+                          <div className="relative mx-auto h-32 w-48 rounded-lg border-[5px] border-slate-700 bg-slate-900 shadow-xl dark:border-slate-500">
+
+                            <div className="absolute inset-2 flex items-center justify-center overflow-hidden rounded bg-gradient-to-br from-blue-500 via-cyan-400 to-slate-900">
+                              <span className="text-3xl font-black text-white/90">
+                                {laptop.brand.charAt(0)}
+                              </span>
+                            </div>
+
+                            <div className="absolute left-1/2 top-1 -translate-x-1/2 h-1 w-1 rounded-full bg-slate-500" />
+                          </div>
+
+                          {/* base */}
+                          <div className="relative mx-auto h-3 w-56 rounded-b-[50%] rounded-t-sm bg-slate-600 shadow-lg dark:bg-slate-500">
+                            <div className="absolute left-1/2 top-0 h-1 w-16 -translate-x-1/2 rounded-b bg-slate-800 dark:bg-slate-700" />
+                          </div>
+
                         </div>
 
+                        {/* status */}
                         {laptop.verification_status && (
-                          <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400">
+                          <span className="absolute right-4 top-4 rounded-full border border-white/60 bg-white/90 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide text-slate-600 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-900/90 dark:text-slate-300">
                             {laptop.verification_status}
                           </span>
                         )}
                       </div>
 
-                      <div className="mt-5">
-                        <p className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                      {/* CONTENT */}
+                      <div className="p-5">
+
+                        <p className="text-xs font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400">
                           {laptop.brand}
                         </p>
 
-                        <h3 className="mt-1 font-bold text-slate-900 group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400">
+                        <h3 className="mt-1 text-lg font-black leading-snug text-slate-900 transition group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400">
                           {laptop.model}
                         </h3>
 
@@ -251,20 +285,36 @@ export default function LaptopGuidesClient({ laptops }: Props) {
                             {laptop.release_year}
                           </p>
                         )}
-                      </div>
 
-                      <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4 dark:border-slate-800">
-                        <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
-                          View upgrade guide
-                        </span>
+                        {/* UPGRADE TAGS */}
+                        <div className="mt-5 flex gap-2">
+                          <span className="inline-flex items-center gap-1.5 rounded-lg bg-blue-50 px-2.5 py-1.5 text-xs font-bold text-blue-700 dark:bg-blue-950/40 dark:text-blue-400">
+                            <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+                            RAM
+                          </span>
 
-                        <span className="text-slate-300 transition group-hover:translate-x-1 group-hover:text-blue-500 dark:text-slate-700">
-                          →
-                        </span>
+                          <span className="inline-flex items-center gap-1.5 rounded-lg bg-cyan-50 px-2.5 py-1.5 text-xs font-bold text-cyan-700 dark:bg-cyan-950/40 dark:text-cyan-400">
+                            <span className="h-1.5 w-1.5 rounded-full bg-cyan-500" />
+                            SSD
+                          </span>
+                        </div>
+
+                        {/* LINK */}
+                        <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4 dark:border-slate-800">
+                          <span className="text-sm font-bold text-slate-700 transition group-hover:text-blue-600 dark:text-slate-300 dark:group-hover:text-blue-400">
+                            View upgrade guide
+                          </span>
+
+                          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition duration-300 group-hover:translate-x-1 group-hover:bg-blue-600 group-hover:text-white dark:bg-slate-800 dark:text-slate-400 dark:group-hover:bg-blue-600">
+                            →
+                          </span>
+                        </div>
+
                       </div>
                     </Link>
                   );
                 })}
+
               </div>
             ) : (
               <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center dark:border-slate-700 dark:bg-slate-900">
@@ -295,6 +345,7 @@ export default function LaptopGuidesClient({ laptops }: Props) {
 
         {/* CTA */}
         <section className="relative mt-16 overflow-hidden rounded-3xl bg-slate-900 p-8 text-white dark:border dark:border-slate-800 sm:p-10">
+
           <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-600/20 blur-3xl" />
 
           <div className="relative max-w-2xl">
@@ -318,6 +369,7 @@ export default function LaptopGuidesClient({ laptops }: Props) {
               Open Compatibility Checker →
             </Link>
           </div>
+
         </section>
 
       </div>
