@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "../lib/supabase";
 
@@ -9,6 +9,24 @@ export default function HomePage() {
   const [results, setResults] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [laptopCount, setLaptopCount] = useState<number | null>(null);
+
+  useEffect(() => {
+  const fetchLaptopCount = async () => {
+    const { count, error } = await supabase
+      .from("laptops")
+      .select("*", { count: "exact", head: true });
+
+    if (error) {
+      console.error("Error fetching laptop count:", error);
+      return;
+    }
+
+    setLaptopCount(count ?? 0);
+  };
+
+  fetchLaptopCount();
+}, []);
 
   const popularLaptops = [
     {
