@@ -9,42 +9,56 @@ export default function HomePage() {
   const [results, setResults] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+
   const [laptopCount, setLaptopCount] = useState<number | null>(null);
   const [ramCount, setRamCount] = useState<number | null>(null);
+  const [ssdCount, setSsdCount] = useState<number | null>(null);
 
   useEffect(() => {
-  const fetchLaptopData = async () => {
-    const { count, error: countError } = await supabase
-      .from("laptops")
-      .select("*", { count: "exact", head: true });
+    const fetchLaptopData = async () => {
+      // TOTAL LAPTOPS
+      const { count, error: countError } = await supabase
+        .from("laptops")
+        .select("*", { count: "exact", head: true });
 
-    if (countError) {
-      console.error("Error fetching laptop count:", countError);
-      return;
-    }
+      if (countError) {
+        console.error("Error fetching laptop count:", countError);
+        return;
+      }
 
-    setLaptopCount(count ?? 0);
+      setLaptopCount(count ?? 0);
 
-    const { data, error } = await supabase
-      .from("laptops")
-      .select("configurations");
+      // RAM + SSD DATA
+      const { data, error } = await supabase
+        .from("laptops")
+        .select("configurations");
 
-    if (error) {
-      console.error("Error fetching RAM data:", error);
-      return;
-    }
+      if (error) {
+        console.error("Error fetching upgrade data:", error);
+        return;
+      }
 
-    const ramUpgradeableCount = (data ?? []).filter((laptop) =>
-      laptop.configurations?.some(
-        (config: any) => config.memory?.status === "yes"
-      )
-    ).length;
+      // RAM UPGRADEABLE COUNT
+      const ramUpgradeableCount = (data ?? []).filter((laptop) =>
+        laptop.configurations?.some(
+          (config: any) => config.memory?.status === "yes"
+        )
+      ).length;
 
-    setRamCount(ramUpgradeableCount);
-  };
+      setRamCount(ramUpgradeableCount);
 
-  fetchLaptopData();
-}, []);
+      // SSD UPGRADEABLE COUNT
+      const ssdUpgradeableCount = (data ?? []).filter((laptop) =>
+        laptop.configurations?.some(
+          (config: any) => config.storage?.status === "yes"
+        )
+      ).length;
+
+      setSsdCount(ssdUpgradeableCount);
+    };
+
+    fetchLaptopData();
+  }, []);
 
   const popularLaptops = [
     {
@@ -188,32 +202,40 @@ export default function HomePage() {
 
             {/* STATS */}
             <div className="mx-auto mt-10 grid max-w-2xl grid-cols-3 divide-x divide-slate-200 dark:divide-slate-800">
+
+              {/* LAPTOP COUNT */}
               <div className="px-3 text-center">
                 <p className="text-2xl font-black text-slate-900 dark:text-white">
                   {laptopCount === null ? "—" : laptopCount}
                 </p>
+
                 <p className="mt-1 text-xs text-slate-500">
                   Laptop Models
                 </p>
               </div>
 
+              {/* RAM COUNT */}
               <div className="px-3 text-center">
-               <p className="text-2xl font-black text-slate-900 dark:text-white">
-               {ramCount === null ? "—" : ramCount}
+                <p className="text-2xl font-black text-slate-900 dark:text-white">
+                  {ramCount === null ? "—" : ramCount}
                 </p>
+
                 <p className="mt-1 text-xs text-slate-500">
-                  Upgrade Checks
+                  RAM Upgrade Checks
                 </p>
               </div>
 
+              {/* SSD COUNT */}
               <div className="px-3 text-center">
                 <p className="text-2xl font-black text-slate-900 dark:text-white">
-                  SSD
+                  {ssdCount === null ? "—" : ssdCount}
                 </p>
+
                 <p className="mt-1 text-xs text-slate-500">
-                  Storage Checks
+                  SSD Upgrade Checks
                 </p>
               </div>
+
             </div>
           </div>
         </section>
@@ -224,6 +246,7 @@ export default function HomePage() {
         <section className="border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
           <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
             <div className="mx-auto max-w-3xl">
+
               <p className="text-sm font-semibold text-blue-600 dark:text-blue-400">
                 Laptop Upgrade Checker
               </p>
@@ -250,6 +273,7 @@ export default function HomePage() {
                   Search
                 </button>
               </form>
+
             </div>
           </div>
         </section>
@@ -263,6 +287,7 @@ export default function HomePage() {
             {/* HOW IT WORKS */}
             <section>
               <div className="text-center">
+
                 <p className="text-sm font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400">
                   Simple & Fast
                 </p>
@@ -275,10 +300,12 @@ export default function HomePage() {
                   Find your laptop and understand its upgrade possibilities
                   in just a few seconds.
                 </p>
+
               </div>
 
               <div className="mt-10 grid gap-5 md:grid-cols-3">
 
+                {/* STEP 1 */}
                 <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
                   <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-xl dark:bg-blue-950/50">
                     🔍
@@ -294,6 +321,7 @@ export default function HomePage() {
                   </p>
                 </div>
 
+                {/* STEP 2 */}
                 <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
                   <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-xl dark:bg-blue-950/50">
                     💾
@@ -309,6 +337,7 @@ export default function HomePage() {
                   </p>
                 </div>
 
+                {/* STEP 3 */}
                 <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
                   <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-xl dark:bg-blue-950/50">
                     ⚡
@@ -331,6 +360,7 @@ export default function HomePage() {
             <section className="mt-20">
               <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
                 <div>
+
                   <p className="text-sm font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400">
                     Explore
                   </p>
@@ -342,10 +372,12 @@ export default function HomePage() {
                   <p className="mt-2 text-slate-500 dark:text-slate-400">
                     Check upgrade options for popular laptop models.
                   </p>
+
                 </div>
               </div>
 
               <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+
                 {popularLaptops.map((laptop) => (
                   <Link
                     key={laptop.slug}
@@ -353,6 +385,7 @@ export default function HomePage() {
                     className="group rounded-2xl border border-slate-200 bg-white p-5 transition duration-200 hover:-translate-y-1 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-500/10 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-blue-700"
                   >
                     <div className="flex items-start justify-between gap-4">
+
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-lg dark:bg-slate-800">
                         💻
                       </div>
@@ -360,6 +393,7 @@ export default function HomePage() {
                       <span className="text-slate-300 transition group-hover:text-blue-500 dark:text-slate-700">
                         →
                       </span>
+
                     </div>
 
                     <h3 className="mt-5 font-bold text-slate-900 group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400">
@@ -371,14 +405,17 @@ export default function HomePage() {
                     </p>
                   </Link>
                 ))}
+
               </div>
             </section>
 
             {/* CTA */}
             <section className="relative mt-20 overflow-hidden rounded-3xl bg-slate-900 p-8 text-white dark:border dark:border-slate-800 sm:p-12">
+
               <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-600/20 blur-3xl" />
 
               <div className="relative max-w-2xl">
+
                 <p className="text-sm font-bold uppercase tracking-widest text-blue-400">
                   Need a detailed check?
                 </p>
@@ -398,6 +435,7 @@ export default function HomePage() {
                 >
                   Open Compatibility Checker →
                 </Link>
+
               </div>
             </section>
           </>
@@ -410,28 +448,34 @@ export default function HomePage() {
             {isLoading ? (
               <div className="py-20 text-center">
                 <div className="text-3xl">🔍</div>
+
                 <p className="mt-4 text-slate-500 dark:text-slate-400">
                   Searching laptop database...
                 </p>
               </div>
             ) : results.length > 0 ? (
+
               <div className="space-y-6">
+
                 {results.map((laptop) => (
                   <div
                     key={laptop.id}
                     className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 md:p-8"
                   >
+
                     <h2 className="text-2xl font-black text-slate-900 dark:text-white">
                       {laptop.brand} {laptop.model}
                     </h2>
 
                     <div className="mt-6 space-y-5">
+
                       {laptop.configurations?.map(
                         (config: any, index: number) => (
                           <div
                             key={index}
                             className="rounded-xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-800 dark:bg-slate-950"
                           >
+
                             <h3 className="font-bold text-slate-900 dark:text-white">
                               {config.label ||
                                 "Standard Configuration"}
@@ -447,6 +491,7 @@ export default function HomePage() {
 
                               {/* RAM */}
                               <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+
                                 <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
                                   Memory / RAM
                                 </p>
@@ -463,10 +508,12 @@ export default function HomePage() {
                                     {config.memory.maxTotalGb} GB
                                   </p>
                                 )}
+
                               </div>
 
                               {/* SSD */}
                               <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+
                                 <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
                                   Storage / SSD
                                 </p>
@@ -486,12 +533,14 @@ export default function HomePage() {
                                       : ""}
                                   </p>
                                 )}
+
                               </div>
 
                             </div>
                           </div>
                         )
                       )}
+
                     </div>
 
                     <Link
@@ -506,11 +555,16 @@ export default function HomePage() {
                     >
                       View full upgrade guide →
                     </Link>
+
                   </div>
                 ))}
+
               </div>
+
             ) : (
+
               <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center dark:border-slate-700 dark:bg-slate-900">
+
                 <div className="text-4xl">🔎</div>
 
                 <h2 className="mt-4 text-xl font-bold text-slate-900 dark:text-white">
@@ -524,6 +578,7 @@ export default function HomePage() {
                 <p className="mt-1 text-sm text-slate-500">
                   Try another brand or model name.
                 </p>
+
               </div>
             )}
 
