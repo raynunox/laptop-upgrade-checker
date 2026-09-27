@@ -1,9 +1,9 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Contact | Laptop Upgrade Checker",
+  title: "Contact Laptop Upgrade Checker | Questions & Corrections",
   description:
-    "Get in touch with the Laptop Upgrade Checker team for questions, corrections, or suggestions.",
+    "Contact Laptop Upgrade Checker for questions, data corrections, laptop model requests, or suggestions about RAM and SSD upgrade compatibility.",
 };
 
 export default function ContactPage() {
