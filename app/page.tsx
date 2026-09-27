@@ -10,22 +10,40 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [laptopCount, setLaptopCount] = useState<number | null>(null);
+  const [ramCount, setRamCount] = useState<number | null>(null);
 
   useEffect(() => {
-  const fetchLaptopCount = async () => {
-    const { count, error } = await supabase
+  const fetchLaptopData = async () => {
+    const { count, error: countError } = await supabase
       .from("laptops")
       .select("*", { count: "exact", head: true });
 
-    if (error) {
-      console.error("Error fetching laptop count:", error);
+    if (countError) {
+      console.error("Error fetching laptop count:", countError);
       return;
     }
 
     setLaptopCount(count ?? 0);
+
+    const { data, error } = await supabase
+      .from("laptops")
+      .select("configurations");
+
+    if (error) {
+      console.error("Error fetching RAM data:", error);
+      return;
+    }
+
+    const ramUpgradeableCount = (data ?? []).filter((laptop) =>
+      laptop.configurations?.some(
+        (config: any) => config.memory?.status === "yes"
+      )
+    ).length;
+
+    setRamCount(ramUpgradeableCount);
   };
 
-  fetchLaptopCount();
+  fetchLaptopData();
 }, []);
 
   const popularLaptops = [
@@ -180,8 +198,8 @@ export default function HomePage() {
               </div>
 
               <div className="px-3 text-center">
-                <p className="text-2xl font-black text-slate-900 dark:text-white">
-                  RAM
+               <p className="text-2xl font-black text-slate-900 dark:text-white">
+               {ramCount === null ? "—" : ramCount}
                 </p>
                 <p className="mt-1 text-xs text-slate-500">
                   Upgrade Checks
