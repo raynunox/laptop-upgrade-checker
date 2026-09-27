@@ -3,7 +3,7 @@ import Link from "next/link";
 export const metadata = {
   title: "Privacy Policy | Laptop Upgrade Checker",
   description:
-    "Privacy policy for Laptop Upgrade Checker, including how we use cookies and third-party advertising.",
+    "Read the Laptop Upgrade Checker privacy policy covering data collection, cookies, advertising, analytics, third-party links, and user privacy.",
 };
 
 export default function PrivacyPage() {
