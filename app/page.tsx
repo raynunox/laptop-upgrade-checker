@@ -172,7 +172,7 @@ export default function HomePage() {
             <div className="mx-auto mt-10 grid max-w-2xl grid-cols-3 divide-x divide-slate-200 dark:divide-slate-800">
               <div className="px-3 text-center">
                 <p className="text-2xl font-black text-slate-900 dark:text-white">
-                  100+
+                  {laptopCount === null ? "—" : laptopCount}
                 </p>
                 <p className="mt-1 text-xs text-slate-500">
                   Laptop Models
