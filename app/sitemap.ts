@@ -1,9 +1,22 @@
 import type { MetadataRoute } from "next";
+import { supabase } from "../lib/supabase";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://laptop-upgrade-checker.vercel.app";
+const baseUrl = "https://laptop-upgrade-checker.vercel.app";
 
-  return [
+function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const { data: laptops, error } = await supabase
+    .from("laptops")
+    .select("brand, model, last_verified_at");
+
+  const staticPages: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
       lastModified: new Date(),
@@ -25,4 +38,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
     },
   ];
+
+  if (error || !laptops) {
+    console.error("Error fetching laptops for sitemap:", error);
+    return staticPages;
+  }
+
+  const laptopPages: MetadataRoute.Sitemap = laptops.map((laptop) => ({
+    url: `${baseUrl}/laptop/${slugify(`${laptop.brand}-${laptop.model}`)}`,
+    lastModified: laptop.last_verified_at
+      ? new Date(laptop.last_verified_at)
+      : new Date(),
+  }));
+
+  return [...staticPages, ...laptopPages];
 }
