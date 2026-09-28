@@ -55,6 +55,13 @@ export default function Navbar() {
           </a>
 
           <a
+            href="/tips-guides"
+            className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
+          >
+            Tips & Guides
+          </a>
+
+          <a
             href="/about"
             className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
           >
@@ -133,6 +140,14 @@ export default function Navbar() {
               className="block rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
             >
               Laptop Guides
+            </a>
+
+            <a
+              href="/tips-guides"
+              onClick={closeMenu}
+              className="block rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
+            >
+              Tips & Guides
             </a>
 
             <a
