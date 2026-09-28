@@ -418,19 +418,19 @@ export default function CheckerPage() {
                 <details className="group rounded-xl border border-blue-100 bg-blue-50/60 p-4 open:pb-4">
                   <summary className="cursor-pointer text-sm font-semibold text-blue-800 marker:content-none">
                     <span className="inline-flex items-center gap-1.5">
-                      ❓ Gak tau konfigurasi laptop lu yang mana?
+                      ❓ Not sure which configuration your laptop has?
                       <span className="text-blue-500 transition-transform group-open:rotate-180">⌄</span>
                     </span>
                   </summary>
                   <div className="mt-3 space-y-2 text-sm text-blue-900">
-                    <p>Cara cepat cek konfigurasi laptop lu (Windows):</p>
+                    <p>Quick ways to check your laptop configuration (Windows):</p>
                     <ul className="list-inside list-disc space-y-1 pl-1">
-                      <li>Tekan <code className="rounded bg-white/70 px-1">Win + R</code>, ketik <code className="rounded bg-white/70 px-1">dxdiag</code>, lihat model & jumlah RAM di tab System.</li>
-                      <li>Buka <strong>Task Manager → Performance → Memory</strong> untuk lihat jumlah slot RAM terpakai & kapasitas total.</li>
-                      <li>Buka <strong>Device Manager → Disk drives</strong> untuk lihat tipe storage yang terpasang.</li>
-                      <li>Cek nomor model spesifik di stiker bagian bawah laptop atau nota pembelian, terutama kalau brand lu punya banyak varian trim.</li>
+                      <li>Press <code className="rounded bg-white/70 px-1">Win + R</code>, type <code className="rounded bg-white/70 px-1">dxdiag</code>, and check the model and RAM information in the System tab.</li>
+                      <li>Open <strong>Task Manager → Performance → Memory</strong> to check the number of RAM slots in use and total memory capacity.</li>
+                      <li>Open <strong>Device Manager → Disk drives</strong> to check the installed storage type.</li>
+                      <li>Check the exact model number on the label underneath your laptop or on your purchase receipt, especially if the brand has multiple variants.</li>
                     </ul>
-                    <p className="text-xs text-blue-700">Kalau masih ragu, pilih konfigurasi yang paling umum/default dulu, hasil cek tetap bisa jadi acuan kasar.</p>
+                   <p className="text-xs text-blue-700">If you're still unsure, choose the most common/default configuration. The result can still serve as a general reference.</p>
                   </div>
                 </details>
               )}
@@ -807,14 +807,14 @@ export default function CheckerPage() {
               onClick={handleCheckAnotherComponent}
               className="flex-1 rounded-xl border border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50"
             >
-              Cek komponen lain di laptop ini
+              Check another component
             </button>
             <button
               type="button"
               onClick={handleCheckAnotherLaptop}
               className="flex-1 rounded-xl border border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50"
             >
-              Cek laptop lain
+              Check another laptop
             </button>
           </div>
         )}
