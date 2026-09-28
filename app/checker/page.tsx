@@ -131,6 +131,19 @@ export default function CheckerPage() {
     );
   }, [brand, model, laptops]);
 
+  // Kolom top-level di Supabase memakai snake_case (model_number, release_year, dst),
+  // sedangkan tipe Laptop di lib/types.ts memakai camelCase. Baca keduanya.
+  const laptopMeta = selectedLaptop
+    ? {
+        modelNumber: selectedLaptop.model_number ?? selectedLaptop.modelNumber,
+        releaseYear: selectedLaptop.release_year ?? selectedLaptop.releaseYear,
+        verificationStatus:
+          selectedLaptop.verification_status ?? selectedLaptop.verificationStatus,
+        lastVerifiedAt:
+          selectedLaptop.last_verified_at ?? selectedLaptop.lastVerifiedAt,
+      }
+    : null;
+
   // ============================================================
   // COMPUTED: Configurations
   // ============================================================
@@ -476,17 +489,17 @@ export default function CheckerPage() {
                 <h2 className="text-lg font-bold text-gray-900">
                   {selectedLaptop.brand} {selectedLaptop.model}
                 </h2>
-                {(selectedLaptop.modelNumber || selectedLaptop.releaseYear) && (
+                {(laptopMeta?.modelNumber || laptopMeta?.releaseYear) && (
                   <p className="text-sm text-gray-500">
-                    {selectedLaptop.modelNumber && `Model ${selectedLaptop.modelNumber}`}
-                    {selectedLaptop.modelNumber && selectedLaptop.releaseYear && " · "}
-                    {selectedLaptop.releaseYear && `Released ${selectedLaptop.releaseYear}`}
+                    {laptopMeta?.modelNumber && `Model ${laptopMeta.modelNumber}`}
+                    {laptopMeta?.modelNumber && laptopMeta?.releaseYear && " · "}
+                    {laptopMeta?.releaseYear && `Released ${laptopMeta.releaseYear}`}
                   </p>
                 )}
               </div>
 
-              {(() => {
-                const badge = getVerificationBadge(selectedLaptop.verificationStatus);
+              {laptopMeta?.verificationStatus && (() => {
+                const badge = getVerificationBadge(laptopMeta.verificationStatus);
                 return (
                   <span className={`shrink-0 rounded-full border px-3 py-1 text-xs font-semibold ${badge.className}`}>
                     {badge.label}
@@ -495,9 +508,9 @@ export default function CheckerPage() {
               })()}
             </div>
 
-            {selectedLaptop.lastVerifiedAt && (
+            {laptopMeta?.lastVerifiedAt && (
               <p className="mb-4 text-xs text-gray-400">
-                Last verified {new Date(selectedLaptop.lastVerifiedAt).toLocaleDateString()}
+                Last verified {new Date(laptopMeta.lastVerifiedAt).toLocaleDateString()}
               </p>
             )}
 
