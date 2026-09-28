@@ -85,14 +85,21 @@ export default function TipsGuidesPage() {
                 </span>
               </div>
 
+              {/* CLICKABLE TITLE */}
               <h2 className="text-xl font-bold leading-tight text-gray-900 dark:text-white">
-                {guide.title}
+                <Link
+                  href={`/tips-guides/${guide.slug}`}
+                  className="transition-colors hover:text-blue-600 dark:hover:text-blue-400"
+                >
+                  {guide.title}
+                </Link>
               </h2>
 
               <p className="mt-3 flex-1 text-sm leading-6 text-gray-600 dark:text-slate-400">
                 {guide.description}
               </p>
 
+              {/* READ GUIDE */}
               <Link
                 href={`/tips-guides/${guide.slug}`}
                 className="mt-6 inline-flex items-center text-sm font-semibold text-blue-600 transition-colors hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
