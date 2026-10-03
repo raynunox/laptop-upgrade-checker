@@ -3,12 +3,14 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "../lib/supabase";
+import { getStatusLabel } from "../lib/compatibility";
 
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
 
   const [laptopCount, setLaptopCount] = useState<number | null>(null);
   const [ramCount, setRamCount] = useState<number | null>(null);
@@ -95,9 +97,21 @@ export default function HomePage() {
     setIsLoading(true);
     setHasSearched(true);
 
-    const searchTerms = searchQuery.trim().split(/\s+/);
+    const searchTerms = searchQuery
+      .trim()
+      .split(/\s+/)
+      .map((term) => term.replace(/[^a-z0-9-]/gi, ""))
+      .filter(Boolean);
 
-    let query = supabase.from("laptops").select("*");
+    if (searchTerms.length === 0) {
+      setResults([]);
+      setSearchError("Use letters or numbers to search for a laptop model.");
+      setIsLoading(false);
+      return;
+    }
+
+    setSearchError(null);
+    let query = supabase.from("laptops").select("id, brand, model, configurations");
 
     searchTerms.forEach((term) => {
       query = query.or(
@@ -110,6 +124,7 @@ export default function HomePage() {
     if (error) {
       console.error("Error fetching data:", error);
       setResults([]);
+      setSearchError("We could not search the laptop database. Please try again.");
     } else {
       setResults(data || []);
     }
@@ -453,6 +468,11 @@ export default function HomePage() {
                   Searching laptop database...
                 </p>
               </div>
+            ) : searchError ? (
+              <div className="rounded-2xl border border-red-200 bg-red-50 p-8 text-center text-red-700" role="alert">
+                <h2 className="text-xl font-bold">Search unavailable</h2>
+                <p className="mt-2">{searchError}</p>
+              </div>
             ) : results.length > 0 ? (
 
               <div className="space-y-6">
@@ -497,9 +517,7 @@ export default function HomePage() {
                                 </p>
 
                                 <p className="mt-2 font-semibold text-slate-800 dark:text-slate-200">
-                                  {config.memory?.status === "yes"
-                                    ? "✅ Upgradeable"
-                                    : "❌ Not upgradeable"}
+                                  {getStatusLabel(config.memory?.status ?? "unknown")}
                                 </p>
 
                                 {config.memory?.maxTotalGb && (
@@ -519,9 +537,7 @@ export default function HomePage() {
                                 </p>
 
                                 <p className="mt-2 font-semibold text-slate-800 dark:text-slate-200">
-                                  {config.storage?.status === "yes"
-                                    ? "✅ Upgradeable"
-                                    : "❌ Not upgradeable"}
+                                  {getStatusLabel(config.storage?.status ?? "unknown")}
                                 </p>
 
                                 {config.storage?.options && (

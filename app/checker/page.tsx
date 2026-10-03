@@ -20,6 +20,7 @@ import {
 } from "../../lib/compatibility";
 
 type CheckType = "ram" | "storage" | "battery";
+type StorageOperation = "replace" | "add";
 
 const STORAGE_KEY = "laptop_checker_selection";
 
@@ -30,6 +31,7 @@ export default function CheckerPage() {
   
   const [laptops, setLaptops] = useState<any[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
+  const [dataError, setDataError] = useState<string | null>(null);
 
   const [brand, setBrand] = useState("");
   const [model, setModel] = useState("");
@@ -41,6 +43,7 @@ export default function CheckerPage() {
   const [ramCapacity, setRamCapacity] = useState("");
   const [storageOptionId, setStorageOptionId] = useState("");
   const [storageCapacity, setStorageCapacity] = useState("");
+  const [storageOperation, setStorageOperation] = useState<StorageOperation>("replace");
 
   const [hasChecked, setHasChecked] = useState(false);
 
@@ -51,10 +54,14 @@ export default function CheckerPage() {
   useEffect(() => {
     async function fetchLaptops() {
       setIsLoadingData(true);
-      const { data, error } = await supabase.from("laptops").select("*");
+      setDataError(null);
+      const { data, error } = await supabase
+        .from("laptops")
+        .select("id, brand, family, model, model_number, release_year, verification_status, last_verified_at, configurations, sources");
       
       if (error) {
         console.error("Error fetching laptops from Supabase:", error);
+        setDataError("We could not load the laptop database. Please try again.");
       } else {
         setLaptops(data || []);
       }
@@ -240,6 +247,7 @@ export default function CheckerPage() {
     setRamCapacity("");
     setStorageOptionId("");
     setStorageCapacity("");
+    setStorageOperation("replace");
     setHasChecked(false);
   }
 
@@ -297,7 +305,7 @@ export default function CheckerPage() {
     !isNaN(ramCapacityNumber)
       ? checkRamCompatibility(
           selectedConfiguration.memory,
-          ramCapacityNumber
+          { operation: "total", capacityGb: ramCapacityNumber }
         )
       : null;
 
@@ -312,7 +320,8 @@ export default function CheckerPage() {
     selectedStorageOption &&
     storageCapacityNumber !== null &&
     !isNaN(storageCapacityNumber)
-      ? checkStorageCompatibility(selectedConfiguration.storage, {
+        ? checkStorageCompatibility(selectedConfiguration.storage, {
+          operation: storageOperation,
           formFactor: selectedStorageOption.formFactor,
           interface: selectedStorageOption.interface,
           capacityGb: storageCapacityNumber,
@@ -356,6 +365,11 @@ export default function CheckerPage() {
             <div className="py-8 text-center">
               <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
               <p className="mt-4 text-sm font-medium text-gray-500">Loading database...</p>
+            </div>
+          ) : dataError ? (
+            <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700" role="alert">
+              <p>{dataError}</p>
+              <button type="button" onClick={() => window.location.reload()} className="mt-3 font-semibold underline">Try again</button>
             </div>
           ) : (
             <div className="space-y-5 animate-in fade-in duration-500">
@@ -697,6 +711,14 @@ export default function CheckerPage() {
             </div>
 
             <div className="space-y-5">
+              <div>
+                <label htmlFor="storage-operation-select" className="mb-1.5 block text-sm font-medium text-gray-700">Upgrade action</label>
+                <select id="storage-operation-select" value={storageOperation} onChange={(e) => { setStorageOperation(e.target.value as StorageOperation); setHasChecked(false); }} className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                  <option value="replace">Replace the existing drive</option>
+                  <option value="add">Add a second drive</option>
+                </select>
+                {storageOperation === "add" && <p className="mt-2 text-xs text-gray-500">An additional drive requires a documented empty compatible slot.</p>}
+              </div>
               <div>
                 <label htmlFor="storage-slot-select" className="mb-1.5 block text-sm font-medium text-gray-700">Storage Type (Slot)</label>
                 <select

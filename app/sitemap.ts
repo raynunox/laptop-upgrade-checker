@@ -3,7 +3,7 @@ import type { MetadataRoute } from "next";
 import { supabase } from "../lib/supabase";
 import { guides } from "../data/guides";
 
-const baseUrl = "https://laptop-upgrade-checker.vercel.app";
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptop-upgrade-checker.vercel.app";
 
 function slugify(value: string) {
   return value

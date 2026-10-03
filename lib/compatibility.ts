@@ -12,10 +12,17 @@ export type CompatibilityResult = {
   reason: string;
 };
 
+export type RamRequirement = {
+  /** Whether the capacity is the desired system total or one module being added. */
+  operation: "total" | "add_module";
+  capacityGb: number;
+};
+
 export function checkRamCompatibility(
   memory: MemorySpec,
-  requestedGb: number
+  requested: RamRequirement
 ): CompatibilityResult {
+  const requestedGb = requested.capacityGb;
   if (memory.status === "unknown") {
     return {
       status: "unknown",
@@ -31,6 +38,39 @@ export function checkRamCompatibility(
       title: "RAM is not upgradeable",
       reason:
         "The documented memory configuration does not support a RAM upgrade.",
+    };
+  }
+
+  if (!Number.isFinite(requestedGb) || requestedGb <= 0) {
+    return {
+      status: "unknown",
+      title: "Invalid RAM capacity",
+      reason: "Choose a positive RAM capacity before checking compatibility.",
+    };
+  }
+
+  if (requested.operation === "add_module") {
+    if (memory.slots === 0 || memory.availableSlots === 0) {
+      return {
+        status: "no",
+        title: "No documented empty RAM slot",
+        reason: "This configuration has no documented empty user-accessible RAM slot for an additional module.",
+      };
+    }
+
+    if (memory.maxPerSlotGb && requestedGb > memory.maxPerSlotGb) {
+      return {
+        status: "no",
+        title: "Module capacity exceeds the documented slot limit",
+        reason: `Each RAM slot is documented for up to ${memory.maxPerSlotGb} GB.`,
+      };
+    }
+
+    return {
+      status: "conditional",
+      title: "Verify the installed RAM layout",
+      reason:
+        "An additional module requires confirmation of an empty slot and the current total RAM. This database does not document both values for this configuration.",
     };
   }
 
@@ -51,15 +91,20 @@ export function checkRamCompatibility(
     };
   }
 
-  if (
-    memory.onboardGb &&
-    requestedGb < memory.onboardGb
-  ) {
+  if (memory.onboardGb && requestedGb < memory.onboardGb) {
     return {
       status: "conditional",
       title: "Check your current configuration",
       reason:
         "Part of the memory is soldered, so the requested capacity depends on the installed memory configuration.",
+    };
+  }
+
+  if (memory.status === "conditional") {
+    return {
+      status: "conditional",
+      title: "Compatible only with documented conditions",
+      reason: `The requested total is within the documented ${memory.maxTotalGb} GB maximum, but this configuration has conditions that must be verified before upgrading.`,
     };
   }
 
@@ -71,6 +116,7 @@ export function checkRamCompatibility(
 }
 
 export type StorageRequirement = {
+  operation: "replace" | "add";
   formFactor: string;
   interface: string;
   capacityGb?: number;
@@ -86,6 +132,14 @@ export function checkStorageCompatibility(
       title: "Not enough verified information",
       reason:
         "We do not have enough verified storage information for this configuration.",
+    };
+  }
+
+  if (storage.status === "no") {
+    return {
+      status: "no",
+      title: "Storage is not upgradeable",
+      reason: "The documented storage configuration does not support this upgrade.",
     };
   }
 
@@ -106,20 +160,65 @@ export function checkStorageCompatibility(
     };
   }
 
-  if (!requested.capacityGb) {
+  if (requested.operation === "add") {
+    if (storage.physicalSlots === 0 || storage.availableSlots === 0) {
+      return {
+        status: "no",
+        title: "No documented empty storage slot",
+        reason: "This configuration has no documented empty storage slot for an additional drive.",
+      };
+    }
+
+    if (storage.availableSlots === undefined) {
+      return {
+        status: "conditional",
+        title: "Verify that a storage slot is empty",
+        reason: "The physical storage-slot count is documented, but the database does not confirm that an additional compatible slot is unused.",
+      };
+    }
+  }
+
+  const optionStatus = matchingOptions.some((option) => option.replaceable === "no")
+    ? "no"
+    : matchingOptions.some((option) => option.replaceable === "conditional" || option.replaceable === "unknown")
+      ? "conditional"
+      : "yes";
+
+  if (requested.operation === "replace" && optionStatus === "no") {
     return {
-      status: "yes",
-      title: "Compatible",
-      reason:
-        "The selected form factor and interface are documented for this configuration.",
+      status: "no",
+      title: "Drive is not documented as replaceable",
+      reason: "The matching storage option is not documented as user-replaceable.",
     };
   }
 
+  if (!requested.capacityGb || requested.capacityGb <= 0) {
+    return {
+      status: "unknown",
+      title: "Storage capacity is required",
+      reason: "Choose a positive capacity so it can be checked against documented limits.",
+    };
+  }
+
+  const requestedCapacityGb = requested.capacityGb;
+
   const capacityMatch = matchingOptions.some(
     (option) =>
-      !option.maxCapacityGb ||
-      requested.capacityGb! <= option.maxCapacityGb
+      option.maxCapacityGb !== undefined && requestedCapacityGb <= option.maxCapacityGb
   );
+
+  const hasDocumentedCapacity = matchingOptions.some(
+    (option) => option.maxCapacityGb !== undefined
+  );
+
+  if (!hasDocumentedCapacity) {
+    return {
+      status: "unknown",
+      title: "Storage capacity limit is unknown",
+      reason:
+        "The matching storage format is documented, but no verified capacity limit is available for it.",
+    };
+  }
 
   if (!capacityMatch) {
     const documentedMaximums = matchingOptions
@@ -142,11 +241,20 @@ export function checkStorageCompatibility(
     };
   }
 
+  if (storage.status === "conditional" || optionStatus === "conditional") {
+    return {
+      status: "conditional",
+      title: "Compatible only with documented conditions",
+      reason:
+        "The selected format and capacity match documented information, but replaceability or configuration conditions must be verified before proceeding.",
+    };
+  }
+
   return {
     status: "yes",
     title: "Compatible",
     reason:
-      "The selected storage format, interface, and capacity match the documented configuration.",
+      "The selected storage format, interface, operation, and capacity match the documented configuration.",
   };
 }
 

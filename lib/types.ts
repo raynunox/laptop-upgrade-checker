@@ -40,6 +40,8 @@ export type MemorySpec = {
 
   onboardGb?: number;
   slots?: number;
+  /** Number of empty, user-accessible memory slots. Omit when unverified. */
+  availableSlots?: number;
 
   maxTotalGb?: number;
   maxPerSlotGb?: number;
@@ -65,6 +67,8 @@ export type StorageSpec = {
   status: CompatibilityStatus;
 
   physicalSlots: number;
+  /** Number of empty storage slots. Omit when the installed layout is unknown. */
+  availableSlots?: number;
 
   options: StorageOption[];
 

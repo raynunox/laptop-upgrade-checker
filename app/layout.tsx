@@ -8,9 +8,11 @@ import Navbar from "../components/Navbar";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://laptop-upgrade-checker.vercel.app"),
   title: "Laptop Upgrade Checker | Check RAM & SSD Upgrades",
   description:
     "Check whether your laptop can be upgraded with more RAM or SSD storage. Search your laptop model and find documented upgrade limits and compatibility.",
+  alternates: { canonical: "/" },
   verification: {
     google: "wSMx9XJV6Hrs6vRctIWcLN1mTDLhcoTxBtGbKcQonXw",
   },
