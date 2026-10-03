@@ -248,6 +248,155 @@ export const guides: Guide[] = [
       "how-to-check-maximum-ram",
     ],
   },
+
+  {
+    slug: "how-to-check-maximum-ram",
+    category: "RAM",
+    title: "How to Check the Maximum RAM Supported by Your Laptop",
+    description:
+      "Find out how much RAM your laptop supports using Windows tools, official manufacturer specifications, and hardware information.",
+    seoTitle:
+      "How to Check Maximum RAM Supported by Your Laptop | Laptop Upgrade Checker",
+    seoDescription:
+      "Learn how to check your laptop's maximum supported RAM using Windows, manufacturer specifications, and processor details before upgrading.",
+    intro:
+      "Before buying a RAM upgrade, it is important to know how much memory your laptop can actually support. The maximum capacity depends on the laptop's motherboard, memory slots, processor, and manufacturer configuration.",
+    quickAnswer:
+      "Start by identifying your exact laptop model, then check its official specifications or service manual for the maximum supported RAM. Windows tools and processor specifications can provide useful clues, but they do not always reveal the laptop's actual upgrade limit.",
+    sections: [
+      {
+        heading: "Why should you check the maximum RAM first?",
+        paragraphs: [
+          "Not every laptop supports the same amount of memory. Some models allow RAM upgrades through removable modules, while others use soldered memory that cannot be replaced.",
+          "Checking the supported capacity before purchasing RAM helps you avoid buying an incompatible module or more memory than your laptop can use.",
+        ],
+      },
+      {
+        heading: "Step 1: Find your exact laptop model",
+        paragraphs: [
+          "Start by identifying the complete model name or model number of your laptop. A product family can contain several configurations with different memory limits, so a general name may not be specific enough.",
+          "In Windows, press Windows + R, type msinfo32, and press Enter. Look for System Manufacturer and System Model in the System Information window.",
+          "You can also check the label on the bottom of your laptop or the original purchase documentation.",
+        ],
+        callout: {
+          title: "Important",
+          text: "Record the full model number, including any suffix or generation identifier. Two laptops with similar names may have different memory configurations.",
+        },
+      },
+      {
+        heading: "Step 2: Check Windows memory information",
+        paragraphs: [
+          "Windows provides several tools that can help you understand your current memory configuration. However, these tools may not show the laptop's official maximum supported capacity.",
+        ],
+        bullets: [
+          "Task Manager: Press Ctrl + Shift + Esc, open Performance, and select Memory to see installed RAM, speed, and available slot information when reported.",
+          "System Information: Run msinfo32 to view the installed physical memory and other system details.",
+          "Command Prompt: Run wmic memphysical get MaxCapacity, MemoryDevices on systems where WMIC is available. The reported capacity is firmware-provided information and may not reflect the manufacturer's validated upgrade limit.",
+        ],
+        callout: {
+          title: "Do not rely on one Windows result",
+          text: "Windows may report incomplete or firmware-dependent information. Confirm the upgrade limit with documentation for your exact laptop model.",
+        },
+      },
+      {
+        heading: "Step 3: Check the manufacturer's specifications",
+        paragraphs: [
+          "The laptop manufacturer's official product page, support page, or service manual is usually the most useful source for the supported memory configuration.",
+          "Search for your exact model number and look for terms such as Memory, RAM, Maximum Memory, Memory Slots, or Technical Specifications.",
+          "Some manufacturers publish different limits for different configurations. Check whether the stated capacity applies to your exact model and whether it requires a particular memory module type.",
+        ],
+        bullets: [
+          "Check the maximum total RAM capacity.",
+          "Confirm the number of memory slots.",
+          "Find out whether any memory is soldered to the motherboard.",
+          "Check supported memory types and speeds.",
+          "Review any configuration restrictions in the service manual.",
+        ],
+      },
+      {
+        heading: "Step 4: Check the processor's memory limit",
+        paragraphs: [
+          "The processor also has memory specifications, including supported memory types and maximum memory capacity. You can find these details on the processor manufacturer's official specification page.",
+          "However, the processor's maximum memory capacity is not automatically the maximum RAM supported by the laptop. The motherboard design, BIOS, memory slots, and manufacturer configuration can impose a lower limit.",
+          "Use processor specifications as supporting information, not as the only source for deciding how much RAM to buy.",
+        ],
+      },
+      {
+        heading: "Step 5: Understand RAM slots and soldered memory",
+        table: {
+          headers: ["Configuration", "What it means for upgrades"],
+          rows: [
+            [
+              "Two removable slots",
+              "Both modules may be replaceable, subject to the laptop's supported capacity.",
+            ],
+            [
+              "One removable slot",
+              "The installed module may be replaceable, but total capacity also depends on any onboard memory.",
+            ],
+            [
+              "Soldered memory only",
+              "The RAM is generally not user-upgradable.",
+            ],
+            [
+              "Soldered memory plus a slot",
+              "The removable slot may allow an upgrade, within the laptop's documented limits.",
+            ],
+          ],
+        },
+        paragraphs: [
+          "The number of slots alone does not determine the maximum capacity. Check the supported module size and whether onboard memory is included in the stated total.",
+        ],
+      },
+      {
+        heading: "Common mistakes when checking maximum RAM",
+        bullets: [
+          "Using the processor's maximum memory figure as the laptop's guaranteed limit.",
+          "Assuming every model in the same product family has identical specifications.",
+          "Confusing currently installed RAM with maximum supported RAM.",
+          "Ignoring soldered memory when calculating total capacity.",
+          "Buying a module without checking its form factor and memory generation.",
+          "Relying on a third-party specification page without confirming the exact configuration.",
+        ],
+      },
+      {
+        heading: "Use Laptop Upgrade Checker to research your model",
+        paragraphs: [
+          "If you already know your laptop model, use Laptop Upgrade Checker to look for documented RAM upgrade information and compare it with the specifications you found.",
+          "When information is unavailable or unclear, consult the manufacturer's support documentation before purchasing memory.",
+        ],
+      },
+      {
+        heading: "Frequently asked questions",
+        table: {
+          headers: ["Question", "Answer"],
+          rows: [
+            [
+              "Can Windows tell me the maximum RAM?",
+              "Some Windows tools report firmware-provided capacity information, but it may be incomplete. Verify the result against your laptop's official documentation.",
+            ],
+            [
+              "Does a processor's RAM limit apply to my laptop?",
+              "Not necessarily. The laptop's motherboard and manufacturer configuration may support less memory than the processor's stated limit.",
+            ],
+            [
+              "Can I upgrade soldered RAM?",
+              "Soldered memory is generally not designed for user replacement. Check whether your laptop has a separate removable slot.",
+            ],
+            [
+              "Why do similar laptop models have different RAM limits?",
+              "Different generations, motherboard designs, and configurations can have different memory support.",
+            ],
+          ],
+        },
+      },
+    ],
+    relatedGuides: [
+      "can-i-upgrade-my-laptop-ram",
+      "how-much-ram-do-i-need",
+    ],
+  },
+
 ];
 
 export function getGuideBySlug(slug: string) {
