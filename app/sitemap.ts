@@ -1,5 +1,7 @@
+
 import type { MetadataRoute } from "next";
 import { supabase } from "../lib/supabase";
+import { guides } from "../data/guides";
 
 const baseUrl = "https://laptop-upgrade-checker.vercel.app";
 
@@ -26,6 +28,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
     },
     {
+      url: `${baseUrl}/tips-guides`,
+      lastModified: new Date(),
+    },
+    {
       url: `${baseUrl}/about`,
       lastModified: new Date(),
     },
@@ -39,9 +45,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
+  const guidePages: MetadataRoute.Sitemap = guides.map((guide) => ({
+    url: `${baseUrl}/tips-guides/${guide.slug}`,
+    lastModified: new Date(),
+  }));
+
   if (error || !laptops) {
     console.error("Error fetching laptops for sitemap:", error);
-    return staticPages;
+    return [...staticPages, ...guidePages];
   }
 
   const laptopPages: MetadataRoute.Sitemap = laptops.map((laptop) => ({
@@ -51,5 +62,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       : new Date(),
   }));
 
-  return [...staticPages, ...laptopPages];
+  return [...staticPages, ...guidePages, ...laptopPages];
 }
