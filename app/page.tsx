@@ -128,7 +128,7 @@ export default function HomePage() {
             <div className="absolute left-1/2 top-0 h-[500px] w-[700px] -translate-x-1/2 rounded-full bg-blue-500/10 blur-3xl dark:bg-blue-500/10" />
           </div>
 
-          <div className="relative mx-auto max-w-6xl px-4 pb-16 pt-16 sm:px-6 md:pb-20 md:pt-24">
+          <div className="relative mx-auto max-w-screen-2xl px-4 pb-16 pt-16 sm:px-6 md:pb-20 md:pt-24">
 
             {/* Badge */}
             <div className="flex justify-center">
@@ -139,7 +139,7 @@ export default function HomePage() {
             </div>
 
             {/* Heading */}
-            <div className="mx-auto mt-7 max-w-4xl text-center">
+            <div className="mx-auto mt-7 max-w-5xl text-center">
               <h1 className="text-5xl font-black tracking-tight sm:text-6xl md:text-7xl">
                 Can I Upgrade
                 <span className="block bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent dark:from-blue-400 dark:to-cyan-400">
@@ -147,14 +147,14 @@ export default function HomePage() {
                 </span>
               </h1>
 
-              <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-slate-600 dark:text-slate-400 sm:text-lg">
+              <p className="mx-auto mt-6 max-w-3xl text-base leading-7 text-slate-600 dark:text-slate-400 sm:text-lg">
                 Check whether your laptop can support more RAM, SSD storage,
                 and other hardware upgrades using documented specifications.
               </p>
             </div>
 
             {/* SEARCH */}
-            <div className="mx-auto mt-10 max-w-3xl">
+            <div className="mx-auto mt-10 max-w-4xl">
               <div className="rounded-3xl border border-slate-200 bg-white p-3 shadow-2xl shadow-slate-300/30 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/30 sm:p-4">
 
                 <form
@@ -201,7 +201,7 @@ export default function HomePage() {
             </div>
 
             {/* STATS */}
-            <div className="mx-auto mt-10 grid max-w-2xl grid-cols-3 divide-x divide-slate-200 dark:divide-slate-800">
+            <div className="mx-auto mt-10 grid max-w-4xl grid-cols-3 divide-x divide-slate-200 dark:divide-slate-800">
 
               {/* LAPTOP COUNT */}
               <div className="px-3 text-center">
@@ -244,8 +244,8 @@ export default function HomePage() {
       {/* SEARCH MODE HEADER */}
       {hasSearched && (
         <section className="border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
-          <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-            <div className="mx-auto max-w-3xl">
+          <div className="mx-auto max-w-screen-2xl px-4 py-8 sm:px-6">
+            <div className="mx-auto max-w-6xl">
 
               <p className="text-sm font-semibold text-blue-600 dark:text-blue-400">
                 Laptop Upgrade Checker
@@ -280,7 +280,7 @@ export default function HomePage() {
       )}
 
       {/* MAIN CONTENT */}
-      <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+      <div className="mx-auto max-w-screen-2xl px-4 py-14 sm:px-6">
 
         {!hasSearched && (
           <>
@@ -414,7 +414,7 @@ export default function HomePage() {
 
               <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-600/20 blur-3xl" />
 
-              <div className="relative max-w-2xl">
+              <div className="relative max-w-3xl">
 
                 <p className="text-sm font-bold uppercase tracking-widest text-blue-400">
                   Need a detailed check?
