@@ -1,4 +1,3 @@
-
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Script from "next/script";
@@ -18,15 +17,17 @@ export const metadata: Metadata = {
 };
 
 const themeScript = `
-(function() {
-  try {
-    var savedTheme = localStorage.getItem("theme");
-    var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    var isDark = savedTheme === "dark" || (!savedTheme && prefersDark);
+  (function () {
+    try {
+      const savedTheme = localStorage.getItem("theme");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const isDark = savedTheme === "dark" || (!savedTheme && prefersDark);
 
-    document.documentElement.classList.toggle("dark", isDark);
-  } catch (e) {}
-})();
+      document.documentElement.classList.toggle("dark", isDark);
+      document.documentElement.style.colorScheme = isDark ? "dark" : "light";
+      document.documentElement.style.backgroundColor = isDark ? "#020617" : "#f9fafb";
+    } catch (e) {}
+  })();
 `;
 
 export default function RootLayout({
