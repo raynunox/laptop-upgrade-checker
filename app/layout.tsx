@@ -1,5 +1,7 @@
+
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
@@ -15,6 +17,18 @@ export const metadata: Metadata = {
   },
 };
 
+const themeScript = `
+(function() {
+  try {
+    var savedTheme = localStorage.getItem("theme");
+    var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    var isDark = savedTheme === "dark" || (!savedTheme && prefersDark);
+
+    document.documentElement.classList.toggle("dark", isDark);
+  } catch (e) {}
+})();
+`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -22,14 +36,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <Script
+          id="theme-initializer"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: themeScript }}
+        />
+      </head>
+
       <body
-        className={`${inter.className} flex min-h-screen flex-col bg-gray-50 text-gray-900 antialiased transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100`}
+        className={`${inter.className} flex min-h-screen flex-col bg-gray-50 text-gray-900 antialiased dark:bg-slate-950 dark:text-slate-100`}
       >
         <Navbar />
 
-        <div className="flex-1">
-          {children}
-        </div>
+        <div className="flex-1">{children}</div>
 
         <Footer />
       </body>
