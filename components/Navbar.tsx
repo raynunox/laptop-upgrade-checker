@@ -10,7 +10,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl dark:border-slate-800/80 dark:bg-slate-950/90">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+      <div className="mx-auto flex h-16 max-w-screen-2xl items-center justify-between px-4 sm:px-6">
 
         {/* BRAND */}
         <a
@@ -116,7 +116,7 @@ export default function Navbar() {
       {/* MOBILE MENU */}
       {open && (
         <div className="border-t border-slate-200 bg-white px-4 pb-4 pt-2 dark:border-slate-800 dark:bg-slate-950 md:hidden">
-          <nav className="mx-auto max-w-6xl space-y-1">
+          <nav className="mx-auto max-w-screen-2xl space-y-1">
 
             <a
               href="/"
