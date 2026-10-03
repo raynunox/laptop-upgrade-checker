@@ -1,51 +1,9 @@
+
 import Link from "next/link";
+import type { Metadata } from "next";
+import { guides } from "@/data/guides";
 
-const guides = [
-  {
-    category: "RAM",
-    title: "How Much RAM Do I Need for My Laptop?",
-    description:
-      "Learn how much RAM you need for everyday tasks, productivity, gaming, and heavier workloads.",
-    slug: "how-much-ram-do-i-need",
-  },
-  {
-    category: "RAM",
-    title: "Can I Upgrade My Laptop RAM?",
-    description:
-      "Find out how to check whether your laptop RAM is upgradeable and what limitations you should look for.",
-    slug: "can-i-upgrade-my-laptop-ram",
-  },
-  {
-    category: "SSD",
-    title: "Can I Upgrade My Laptop SSD?",
-    description:
-      "Learn how to determine whether your laptop supports an SSD upgrade and which storage options may be compatible.",
-    slug: "can-i-upgrade-my-laptop-ssd",
-  },
-  {
-    category: "RAM vs SSD",
-    title: "RAM vs SSD: Which Upgrade Makes Your Laptop Faster?",
-    description:
-      "Understand the difference between upgrading RAM and storage and when each upgrade can make a noticeable difference.",
-    slug: "ram-vs-ssd",
-  },
-  {
-    category: "SSD",
-    title: "M.2 SATA vs NVMe: What's the Difference?",
-    description:
-      "Understand the difference between M.2 SATA and NVMe SSDs before choosing an upgrade for your laptop.",
-    slug: "m2-sata-vs-nvme",
-  },
-  {
-    category: "Compatibility",
-    title: "How to Check Your Laptop's Maximum RAM",
-    description:
-      "A practical guide to finding the maximum supported RAM capacity for your laptop.",
-    slug: "how-to-check-maximum-ram",
-  },
-];
-
-export const metadata = {
+export const metadata: Metadata = {
   title: "Laptop Tips & Guides | RAM, SSD & Upgrade Guides",
   description:
     "Practical laptop upgrade tips and guides covering RAM, SSD storage, compatibility, and laptop hardware upgrades.",
@@ -85,7 +43,6 @@ export default function TipsGuidesPage() {
                 </span>
               </div>
 
-              {/* CLICKABLE TITLE */}
               <h2 className="text-xl font-bold leading-tight text-gray-900 dark:text-white">
                 <Link
                   href={`/tips-guides/${guide.slug}`}
@@ -99,7 +56,6 @@ export default function TipsGuidesPage() {
                 {guide.description}
               </p>
 
-              {/* READ GUIDE */}
               <Link
                 href={`/tips-guides/${guide.slug}`}
                 className="mt-6 inline-flex items-center text-sm font-semibold text-blue-600 transition-colors hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
