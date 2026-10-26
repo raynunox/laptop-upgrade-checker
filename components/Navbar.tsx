@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import ThemeToggle from "./ThemeToggle";
 
 export default function Navbar() {
@@ -13,7 +14,7 @@ export default function Navbar() {
       <div className="mx-auto flex h-16 max-w-screen-2xl items-center justify-between px-4 sm:px-6">
 
         {/* BRAND */}
-        <a
+        <Link
           href="/"
           onClick={closeMenu}
           className="group flex items-center gap-3"
@@ -29,51 +30,51 @@ export default function Navbar() {
           <span className="text-sm font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-base">
             Laptop Upgrade Checker
           </span>
-        </a>
+        </Link>
 
         {/* DESKTOP NAV */}
         <nav className="hidden items-center gap-1 md:flex">
-          <a
+          <Link
             href="/"
             className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
           >
             Home
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="/checker"
             className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
           >
             Upgrade Checker
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="/laptop-guides"
             className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
           >
             Laptop Guides
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="/tips-guides"
             className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
           >
             Tips & Guides
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="/about"
             className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
           >
             About
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="/contact"
             className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
           >
             Contact
-          </a>
+          </Link>
         </nav>
 
         {/* RIGHT */}
@@ -118,53 +119,53 @@ export default function Navbar() {
         <div className="border-t border-slate-200 bg-white px-4 pb-4 pt-2 dark:border-slate-800 dark:bg-slate-950 md:hidden">
           <nav className="mx-auto max-w-screen-2xl space-y-1">
 
-            <a
+            <Link
               href="/"
               onClick={closeMenu}
               className="block rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
             >
               Home
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="/checker"
               onClick={closeMenu}
               className="block rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
             >
               Upgrade Checker
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="/laptop-guides"
               onClick={closeMenu}
               className="block rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
             >
               Laptop Guides
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="/tips-guides"
               onClick={closeMenu}
               className="block rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
             >
               Tips & Guides
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="/about"
               onClick={closeMenu}
               className="block rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
             >
               About
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="/contact"
               onClick={closeMenu}
               className="block rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
             >
               Contact
-            </a>
+            </Link>
 
           </nav>
         </div>
