@@ -26,10 +26,21 @@ export default function ThemeToggle() {
 
   function toggleTheme() {
     const next = !dark;
+    const root = document.documentElement;
+
+    // Change theme immediately without animating every background/text color.
+    // This prevents a bright flash while the page switches between themes.
+    root.classList.add("theme-changing");
+    root.classList.toggle("dark", next);
+    root.style.colorScheme = next ? "dark" : "light";
+    root.style.backgroundColor = next ? "#020617" : "#f9fafb";
 
     setDark(next);
-    document.documentElement.classList.toggle("dark", next);
     localStorage.setItem("theme", next ? "dark" : "light");
+
+    window.setTimeout(() => {
+      root.classList.remove("theme-changing");
+    }, 100);
   }
 
   return (
