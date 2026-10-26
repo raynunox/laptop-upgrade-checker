@@ -337,36 +337,36 @@ export default function CheckerPage() {
           <p className="text-xs font-bold tracking-widest text-blue-600 uppercase">
             Compatibility Engine
           </p>
-          <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+          <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-gray-900 dark:text-slate-100 sm:text-4xl">
             Configure Your Upgrade
           </h1>
-          <p className="mt-2 text-base text-gray-500">
+          <p className="mt-2 text-base text-gray-500 dark:text-slate-400">
             Select your laptop model to check hardware upgrade compatibility limits.
           </p>
         </div>
 
         {/* LAPTOP SELECTION CARD */}
-        <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
+        <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900 sm:p-8">
           <div className="flex items-center gap-3 mb-6">
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-600">1</span>
-            <h2 className="text-xl font-bold text-gray-900">Device Selection</h2>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-slate-100">Device Selection</h2>
           </div>
 
           {isLoadingData ? (
             <div className="py-8 text-center">
               <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
-              <p className="mt-4 text-sm font-medium text-gray-500">Loading database...</p>
+              <p className="mt-4 text-sm font-medium text-gray-500 dark:text-slate-400">Loading database...</p>
             </div>
           ) : (
             <div className="space-y-5 animate-in fade-in duration-500">
               {/* BRAND */}
               <div>
-                <label htmlFor="brand-select" className="mb-1.5 block text-sm font-medium text-gray-700">Brand</label>
+                <label htmlFor="brand-select" className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-slate-300">Brand</label>
                 <select
                   id="brand-select"
                   value={brand}
                   onChange={(e) => handleBrandChange(e.target.value)}
-                  className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 transition-colors dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                 >
                   <option value="">Select brand</option>
                   {brands.map((item) => (
@@ -377,7 +377,7 @@ export default function CheckerPage() {
 
               {/* MODEL */}
               <div>
-                <label htmlFor="model-search-input" className="mb-1.5 block text-sm font-medium text-gray-700">
+                <label htmlFor="model-search-input" className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-slate-300">
                   Model {models.length > 0 && <span className="text-gray-400 font-normal">({models.length} available)</span>}
                 </label>
                 
@@ -388,7 +388,7 @@ export default function CheckerPage() {
                     placeholder="Search specific model..."
                     value={modelSearch}
                     onChange={(e) => setModelSearch(e.target.value)}
-                    className="mb-2 w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                    className="mb-2 w-full rounded-xl border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm transition-colors dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                   />
                 )}
 
@@ -398,7 +398,7 @@ export default function CheckerPage() {
                   value={model}
                   onChange={(e) => handleModelChange(e.target.value)}
                   disabled={!brand}
-                  className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 transition-colors disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 transition-colors dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400 dark:disabled:bg-slate-800 dark:disabled:text-slate-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                 >
                   <option value="">{brand ? "Select your model" : "Select brand first"}</option>
                   {models.map((item: any) => (
@@ -415,22 +415,22 @@ export default function CheckerPage() {
 
               {/* HOW TO CHECK YOUR CONFIGURATION */}
               {selectedLaptop && configurations.length > 1 && (
-                <details className="group rounded-xl border border-blue-100 bg-blue-50/60 p-4 open:pb-4">
-                  <summary className="cursor-pointer text-sm font-semibold text-blue-800 marker:content-none">
+                <details className="group rounded-xl border border-blue-100 bg-blue-50/60 p-4 dark:border-blue-900 dark:bg-blue-950/40 open:pb-4">
+                  <summary className="cursor-pointer text-sm font-semibold text-blue-800 marker:content-none dark:text-blue-200">
                     <span className="inline-flex items-center gap-1.5">
                       ❓ Not sure which configuration your laptop has?
                       <span className="text-blue-500 transition-transform group-open:rotate-180">⌄</span>
                     </span>
                   </summary>
-                  <div className="mt-3 space-y-2 text-sm text-blue-900">
+                  <div className="mt-3 space-y-2 text-sm text-blue-900 dark:text-blue-100">
                     <p>Quick ways to check your laptop configuration (Windows):</p>
                     <ul className="list-inside list-disc space-y-1 pl-1">
-                      <li>Press <code className="rounded bg-white/70 px-1">Win + R</code>, type <code className="rounded bg-white/70 px-1">dxdiag</code>, and check the model and RAM information in the System tab.</li>
+                      <li>Press <code className="rounded bg-white/70 px-1 dark:bg-slate-800">Win + R</code>, type <code className="rounded bg-white/70 px-1 dark:bg-slate-800">dxdiag</code>, and check the model and RAM information in the System tab.</li>
                       <li>Open <strong>Task Manager → Performance → Memory</strong> to check the number of RAM slots in use and total memory capacity.</li>
                       <li>Open <strong>Device Manager → Disk drives</strong> to check the installed storage type.</li>
                       <li>Check the exact model number on the label underneath your laptop or on your purchase receipt, especially if the brand has multiple variants.</li>
                     </ul>
-                   <p className="text-xs text-blue-700">If you're still unsure, choose the most common/default configuration. The result can still serve as a general reference.</p>
+                   <p className="text-xs text-blue-700 dark:text-blue-300">If you're still unsure, choose the most common/default configuration. The result can still serve as a general reference.</p>
                   </div>
                 </details>
               )}
@@ -438,12 +438,12 @@ export default function CheckerPage() {
               {/* CONFIGURATION */}
               {selectedLaptop && configurations.length > 1 && (
                 <div className="pt-2 animate-in fade-in slide-in-from-top-2 duration-300">
-                  <label htmlFor="config-select" className="mb-1.5 block text-sm font-medium text-gray-700">Factory Configuration</label>
+                  <label htmlFor="config-select" className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-slate-300">Factory Configuration</label>
                   <select
                     id="config-select"
                     value={configurationId}
                     onChange={(e) => handleConfigurationChange(e.target.value)}
-                    className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                    className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 transition-colors dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                   >
                     <option value="">Select configuration</option>
                     {configurations.map((config: any) => (
@@ -452,9 +452,9 @@ export default function CheckerPage() {
                   </select>
 
                   {selectedConfiguration?.conditions && selectedConfiguration.conditions.length > 0 && (
-                    <div className="mt-4 rounded-xl border border-yellow-200 bg-yellow-50 p-4">
-                      <p className="text-sm font-semibold text-yellow-800">Configuration Notes</p>
-                      <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-yellow-700">
+                    <div className="mt-4 rounded-xl border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-950/30">
+                      <p className="text-sm font-semibold text-yellow-800 dark:text-yellow-200">Configuration Notes</p>
+                      <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-yellow-700 dark:text-yellow-200">
                         {selectedConfiguration.conditions.map((condition: string) => (
                           <li key={condition}>{condition}</li>
                         ))}
@@ -467,9 +467,9 @@ export default function CheckerPage() {
               {/* SINGLE CONFIGURATION (auto-selected, notes only) */}
               {selectedLaptop && configurations.length === 1 && selectedConfiguration?.conditions && selectedConfiguration.conditions.length > 0 && (
                 <div className="pt-2 animate-in fade-in slide-in-from-top-2 duration-300">
-                  <div className="rounded-xl border border-yellow-200 bg-yellow-50 p-4">
-                    <p className="text-sm font-semibold text-yellow-800">Configuration Notes</p>
-                    <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-yellow-700">
+                  <div className="rounded-xl border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-950/30">
+                    <p className="text-sm font-semibold text-yellow-800 dark:text-yellow-200">Configuration Notes</p>
+                    <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-yellow-700 dark:text-yellow-200">
                       {selectedConfiguration.conditions.map((condition: string) => (
                         <li key={condition}>{condition}</li>
                       ))}
@@ -483,14 +483,14 @@ export default function CheckerPage() {
 
         {/* SPECS OVERVIEW */}
         {selectedLaptop && selectedConfiguration && (
-          <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+          <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900 sm:p-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
             <div className="flex flex-wrap items-start justify-between gap-3 mb-2">
               <div>
                 <h2 className="text-lg font-bold text-gray-900">
                   {selectedLaptop.brand} {selectedLaptop.model}
                 </h2>
                 {(laptopMeta?.modelNumber || laptopMeta?.releaseYear) && (
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-500 dark:text-slate-400">
                     {laptopMeta?.modelNumber && `Model ${laptopMeta.modelNumber}`}
                     {laptopMeta?.modelNumber && laptopMeta?.releaseYear && " · "}
                     {laptopMeta?.releaseYear && `Released ${laptopMeta.releaseYear}`}
@@ -517,12 +517,12 @@ export default function CheckerPage() {
             {(selectedConfiguration.cpu || selectedConfiguration.gpu) && (
               <div className="mb-6 flex flex-wrap gap-2">
                 {selectedConfiguration.cpu && (
-                  <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
+                  <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 dark:text-slate-300">
                     {selectedConfiguration.cpu}
                   </span>
                 )}
                 {selectedConfiguration.gpu && (
-                  <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
+                  <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 dark:text-slate-300">
                     {selectedConfiguration.gpu}
                   </span>
                 )}
@@ -538,20 +538,20 @@ export default function CheckerPage() {
                 </p>
                 <div className="mt-1.5 space-y-0.5">
                   {selectedConfiguration.memory.maxTotalGb && (
-                    <p className="text-xs text-gray-500">Max {selectedConfiguration.memory.maxTotalGb} GB</p>
+                    <p className="text-xs text-gray-500 dark:text-slate-400">Max {selectedConfiguration.memory.maxTotalGb} GB</p>
                   )}
                   {!!selectedConfiguration.memory.onboardGb && (
-                    <p className="text-xs text-gray-500">{selectedConfiguration.memory.onboardGb} GB soldered onboard</p>
+                    <p className="text-xs text-gray-500 dark:text-slate-400">{selectedConfiguration.memory.onboardGb} GB soldered onboard</p>
                   )}
                   {selectedConfiguration.memory.type && (
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 dark:text-slate-400">
                       {selectedConfiguration.memory.type}
                       {selectedConfiguration.memory.formFactor ? ` · ${selectedConfiguration.memory.formFactor}` : ""}
                       {selectedConfiguration.memory.slots ? ` · ${selectedConfiguration.memory.slots} slot(s)` : ""}
                     </p>
                   )}
                   {selectedConfiguration.memory.supportedSpeedsMts && selectedConfiguration.memory.supportedSpeedsMts.length > 0 && (
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 dark:text-slate-400">
                       Speed: {selectedConfiguration.memory.supportedSpeedsMts.join("/")} MT/s
                     </p>
                   )}
@@ -567,7 +567,7 @@ export default function CheckerPage() {
                 {selectedConfiguration.storage.options && selectedConfiguration.storage.options.length > 0 ? (
                   <ul className="mt-1.5 space-y-1">
                     {selectedConfiguration.storage.options.map((option: any, index: number) => (
-                      <li key={index} className="text-xs text-gray-500">
+                      <li key={index} className="text-xs text-gray-500 dark:text-slate-400">
                         {option.formFactor} · {option.interface}
                         {option.generation ? ` (${option.generation})` : ""}
                         {option.maxCapacityGb
@@ -577,7 +577,7 @@ export default function CheckerPage() {
                     ))}
                   </ul>
                 ) : (
-                  <p className="mt-1.5 text-xs text-gray-500">No documented slots</p>
+                  <p className="mt-1.5 text-xs text-gray-500 dark:text-slate-400">No documented slots</p>
                 )}
               </div>
 
@@ -589,15 +589,15 @@ export default function CheckerPage() {
                 </p>
                 <div className="mt-1.5 space-y-0.5">
                   {selectedConfiguration.battery?.capacityWh && (
-                    <p className="text-xs text-gray-500">{selectedConfiguration.battery.capacityWh} Wh</p>
+                    <p className="text-xs text-gray-500 dark:text-slate-400">{selectedConfiguration.battery.capacityWh} Wh</p>
                   )}
                   {typeof selectedConfiguration.battery?.removable === "boolean" && (
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 dark:text-slate-400">
                       {selectedConfiguration.battery.removable ? "User-removable" : "Not user-removable"}
                     </p>
                   )}
                   {selectedConfiguration.battery?.partNumbers && selectedConfiguration.battery.partNumbers.length > 0 && (
-                    <p className="text-xs text-gray-500">P/N: {selectedConfiguration.battery.partNumbers.join(", ")}</p>
+                    <p className="text-xs text-gray-500 dark:text-slate-400">P/N: {selectedConfiguration.battery.partNumbers.join(", ")}</p>
                   )}
                 </div>
               </div>
@@ -619,7 +619,7 @@ export default function CheckerPage() {
                   className="group block rounded-xl border border-gray-100 bg-gray-50 p-4 transition-colors hover:border-blue-200 hover:bg-blue-50"
                 >
                   <p className="font-semibold text-gray-900 group-hover:text-blue-700 truncate">{source.title}</p>
-                  <p className="mt-1 text-xs text-gray-500">{source.publisher} · {source.type}</p>
+                  <p className="mt-1 text-xs text-gray-500 dark:text-slate-400">{source.publisher} · {source.type}</p>
                 </a>
               ))}
             </div>
@@ -628,7 +628,7 @@ export default function CheckerPage() {
 
         {/* COMPONENT SELECTION */}
         {selectedConfiguration && (
-          <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900 sm:p-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex items-center gap-3 mb-6">
               <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-600">2</span>
               <h2 className="text-xl font-bold text-gray-900">Upgrade Component</h2>
@@ -644,7 +644,7 @@ export default function CheckerPage() {
                 setStorageCapacity("");
                 setHasChecked(false);
               }}
-              className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 transition-colors dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
             >
               <option value="">What do you want to upgrade?</option>
               <option value="ram">RAM / Memory</option>
@@ -656,14 +656,14 @@ export default function CheckerPage() {
 
         {/* TARGET SPECS: RAM */}
         {selectedConfiguration && checkType === "ram" && (
-          <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8 animate-in fade-in duration-300">
+          <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900 sm:p-8 animate-in fade-in duration-300">
             <div className="flex items-center gap-3 mb-6">
               <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-600">3</span>
               <h2 className="text-xl font-bold text-gray-900">Target RAM</h2>
             </div>
 
             <div>
-              <label htmlFor="ram-capacity-select" className="mb-1.5 block text-sm font-medium text-gray-700">Desired Capacity</label>
+              <label htmlFor="ram-capacity-select" className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-slate-300">Desired Capacity</label>
               <select
                 id="ram-capacity-select"
                 value={ramCapacity}
@@ -671,7 +671,7 @@ export default function CheckerPage() {
                   setRamCapacity(e.target.value);
                   setHasChecked(false);
                 }}
-                className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 transition-colors dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               >
                 <option value="">Select RAM capacity</option>
                 {ramCapacities.map((capacity) => (
@@ -690,7 +690,7 @@ export default function CheckerPage() {
 
         {/* TARGET SPECS: STORAGE */}
         {selectedConfiguration && checkType === "storage" && (
-          <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8 animate-in fade-in duration-300">
+          <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900 sm:p-8 animate-in fade-in duration-300">
             <div className="flex items-center gap-3 mb-6">
               <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-600">3</span>
               <h2 className="text-xl font-bold text-gray-900">Target Storage</h2>
@@ -698,7 +698,7 @@ export default function CheckerPage() {
 
             <div className="space-y-5">
               <div>
-                <label htmlFor="storage-slot-select" className="mb-1.5 block text-sm font-medium text-gray-700">Storage Type (Slot)</label>
+                <label htmlFor="storage-slot-select" className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-slate-300">Storage Type (Slot)</label>
                 <select
                   id="storage-slot-select"
                   value={storageOptionId}
@@ -707,7 +707,7 @@ export default function CheckerPage() {
                     setStorageCapacity("");
                     setHasChecked(false);
                   }}
-                  className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 transition-colors dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                 >
                   <option value="">Select storage slot</option>
                   {selectedConfiguration.storage.options.map((option: any, index: number) => (
@@ -720,7 +720,7 @@ export default function CheckerPage() {
 
               {selectedStorageOption && (
                 <div>
-                  <label htmlFor="storage-capacity-select" className="mb-1.5 block text-sm font-medium text-gray-700">Desired Capacity</label>
+                  <label htmlFor="storage-capacity-select" className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-slate-300">Desired Capacity</label>
                   <select
                     id="storage-capacity-select"
                     value={storageCapacity}
@@ -728,7 +728,7 @@ export default function CheckerPage() {
                       setStorageCapacity(e.target.value);
                       setHasChecked(false);
                     }}
-                    className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                    className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 transition-colors dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                   >
                     <option value="">Select capacity</option>
                     {storageCapacities.map((capacity) => (
