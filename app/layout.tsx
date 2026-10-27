@@ -25,7 +25,7 @@ const themeScript = `
 
       document.documentElement.classList.toggle("dark", isDark);
       document.documentElement.style.colorScheme = isDark ? "dark" : "light";
-      document.documentElement.style.backgroundColor = isDark ? "#020617" : "#f9fafb";
+      document.documentElement.style.backgroundColor = isDark ? "#061b33" : "#b9e5f5";
     } catch (e) {}
   })();
 `;
