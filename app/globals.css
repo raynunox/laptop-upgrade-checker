@@ -2,10 +2,285 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  color-scheme: light;
+  --vista-ink: #143452;
+  --vista-muted: #52718d;
+  --vista-blue: #2878b9;
+  --vista-border: rgba(255, 255, 255, 0.82);
+  --vista-glass: rgba(239, 249, 255, 0.76);
+}
+
+.vista-font {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* The layered blue-green desktop glow is the visual foundation of the Aero theme. */
+html,
+body {
+  min-height: 100%;
+}
+
+html {
+  background: #a9d9ed;
+}
+
+body {
+  color: var(--vista-ink);
+  background:
+    radial-gradient(ellipse at 17% 4%, rgba(255, 255, 255, 0.94) 0, rgba(255, 255, 255, 0) 34%),
+    radial-gradient(ellipse at 88% 15%, rgba(118, 220, 228, 0.54) 0, rgba(118, 220, 228, 0) 36%),
+    radial-gradient(ellipse at 47% 77%, rgba(104, 173, 222, 0.3) 0, rgba(104, 173, 222, 0) 40%),
+    linear-gradient(145deg, #dff5ff 0%, #b9e5f5 43%, #8bc7e7 100%);
+  background-attachment: fixed;
+}
+
+.dark {
+  color-scheme: dark;
+  --vista-ink: #e7f5ff;
+  --vista-muted: #a5c0d4;
+  --vista-border: rgba(180, 224, 255, 0.25);
+  --vista-glass: rgba(10, 34, 58, 0.8);
+}
+
+.dark body {
+  color: var(--vista-ink);
+  background:
+    radial-gradient(ellipse at 15% 0%, rgba(37, 112, 167, 0.58) 0, rgba(37, 112, 167, 0) 36%),
+    radial-gradient(ellipse at 88% 12%, rgba(27, 132, 137, 0.36) 0, rgba(27, 132, 137, 0) 36%),
+    linear-gradient(145deg, #061b33 0%, #0a3152 54%, #09263d 100%);
+  background-attachment: fixed;
+}
+
+/* Keep the app's existing page layouts while replacing flat page fills with wallpaper. */
+main[class*="min-h-screen"][class*="bg-"] {
+  background: transparent !important;
+}
+
+/* Aero glass toolbar and branded start orb. */
+.vista-toolbar {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.88) !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(205, 232, 247, 0.62)) !important;
+  box-shadow: 0 5px 22px rgba(34, 87, 125, 0.13), inset 0 1px rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(22px) saturate(1.35);
+}
+
+.dark .vista-toolbar {
+  border-bottom-color: rgba(185, 225, 255, 0.23) !important;
+  background: linear-gradient(180deg, rgba(16, 51, 79, 0.92), rgba(8, 31, 53, 0.82)) !important;
+}
+
+.vista-orb {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.95) !important;
+  background: radial-gradient(circle at 34% 25%, #fff 0, #c6f2ff 13%, #36a8e8 38%, #0870bf 72%, #07508e 100%) !important;
+  box-shadow: 0 0 0 2px rgba(50, 139, 195, 0.28), 0 3px 10px rgba(17, 70, 110, 0.4), inset 0 1px 3px #fff;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.vista-orb::after {
+  position: absolute;
+  inset: 1px 2px 52%;
+  border-radius: 999px 999px 45% 45%;
+  background: linear-gradient(rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.04));
+  content: "";
+  pointer-events: none;
+}
+
+.vista-orb img {
+  position: relative;
+  z-index: 1;
+  border-radius: inherit;
+}
+
+a:hover .vista-orb {
+  transform: translateY(-1px) scale(1.04);
+  box-shadow: 0 0 0 3px rgba(64, 163, 219, 0.35), 0 5px 14px rgba(17, 70, 110, 0.46), inset 0 1px 3px #fff;
+}
+
+
+.vista-control {
+  border-color: rgba(255, 255, 255, 0.92) !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(195, 229, 247, 0.78)) !important;
+  box-shadow: 0 2px 7px rgba(33, 92, 132, 0.18), inset 0 1px #fff !important;
+}
+
+.vista-control:hover {
+  background: linear-gradient(180deg, #fff, rgba(165, 218, 245, 0.94)) !important;
+}
+
+.dark .vista-control {
+  border-color: rgba(185, 225, 255, 0.3) !important;
+  background: linear-gradient(180deg, rgba(48, 100, 137, 0.85), rgba(17, 53, 81, 0.9)) !important;
+  box-shadow: inset 0 1px rgba(235, 249, 255, 0.18), 0 2px 8px rgba(0, 0, 0, 0.22) !important;
+}
+
+.dark .vista-control:hover {
+  background: linear-gradient(180deg, rgba(62, 122, 163, 0.92), rgba(22, 66, 98, 0.96)) !important;
+}
+
+.vista-nav-link {
+  border: 1px solid transparent;
+  border-radius: 0.7rem;
+  padding: 0.55rem 0.8rem;
+  color: #244b6b;
+  font-size: 0.875rem;
+  font-weight: 650;
+  transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.vista-nav-link:hover,
+.vista-nav-link:focus-visible {
+  border-color: rgba(255, 255, 255, 0.92);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(174, 220, 243, 0.52));
+  box-shadow: 0 2px 7px rgba(33, 92, 132, 0.14), inset 0 1px #fff;
+}
+
+.dark .vista-nav-link {
+  color: #d6eeff;
+}
+
+.dark .vista-nav-link:hover,
+.dark .vista-nav-link:focus-visible {
+  border-color: rgba(185, 225, 255, 0.22);
+  background: linear-gradient(180deg, rgba(83, 143, 183, 0.32), rgba(25, 70, 102, 0.35));
+  box-shadow: inset 0 1px rgba(235, 249, 255, 0.12);
+}
+
+.vista-mobile-menu {
+  border-top-color: rgba(255, 255, 255, 0.78) !important;
+  background: rgba(226, 244, 253, 0.88) !important;
+  backdrop-filter: blur(20px);
+}
+
+.dark .vista-mobile-menu {
+  border-top-color: rgba(185, 225, 255, 0.22) !important;
+  background: rgba(8, 31, 53, 0.94) !important;
+}
+
+.vista-mobile-link {
+  display: block;
+  border: 1px solid transparent;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: #244b6b;
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+
+.vista-mobile-link:hover {
+  border-color: rgba(255, 255, 255, 0.9);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(174, 220, 243, 0.48));
+}
+
+.dark .vista-mobile-link {
+  color: #d6eeff;
+}
+
+.dark .vista-mobile-link:hover {
+  border-color: rgba(185, 225, 255, 0.2);
+  background: rgba(66, 120, 157, 0.28);
+}
+
+/* Rounded cards become translucent glass panes with the characteristic bright rim. */
+[class*="rounded-2xl"][class*="bg-white"],
+[class*="rounded-3xl"][class*="bg-white"],
+[class*="rounded-[2rem]"][class*="bg-white"] {
+  border-color: var(--vista-border) !important;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.82), var(--vista-glass)) !important;
+  box-shadow: 0 12px 34px rgba(32, 82, 119, 0.14), inset 0 1px rgba(255, 255, 255, 0.96) !important;
+  backdrop-filter: blur(18px) saturate(1.28);
+}
+
+.dark [class*="rounded-2xl"][class*="bg-white"],
+.dark [class*="rounded-3xl"][class*="bg-white"],
+.dark [class*="rounded-[2rem]"][class*="bg-white"] {
+  border-color: var(--vista-border) !important;
+  background: linear-gradient(145deg, rgba(29, 73, 105, 0.88), rgba(8, 32, 54, 0.88)) !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.2), inset 0 1px rgba(220, 244, 255, 0.12) !important;
+}
+
+/* A glass finish for compact controls, including existing buttons and search fields. */
+button,
+input,
+select {
+  border-radius: 0.75rem;
+}
+
+button[class*="border-slate"],
+button[class*="border-gray"],
+input,
+select {
+  border-color: rgba(78, 135, 177, 0.42);
+  box-shadow: inset 0 1px 2px rgba(38, 82, 114, 0.08), 0 1px rgba(255, 255, 255, 0.76);
+}
+
+button[class*="bg-blue-600"],
+a[class*="bg-blue-600"] {
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  background: linear-gradient(180deg, #68c7f5 0%, #278bd0 48%, #1169b2 100%) !important;
+  box-shadow: 0 3px 9px rgba(19, 87, 139, 0.3), inset 0 1px rgba(255, 255, 255, 0.7);
+  text-shadow: 0 1px 1px rgba(0, 49, 91, 0.4);
+}
+
+button[class*="bg-blue-600"]:hover,
+a[class*="bg-blue-600"]:hover {
+  filter: brightness(1.06);
+  box-shadow: 0 5px 13px rgba(19, 87, 139, 0.38), inset 0 1px rgba(255, 255, 255, 0.78);
+}
+
+a,
+button,
+input,
+select {
+  transition-duration: 180ms;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid rgba(34, 139, 205, 0.58);
+  outline-offset: 2px;
+}
+
+footer.vista-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.82) !important;
+  background: linear-gradient(180deg, rgba(239, 249, 255, 0.7), rgba(180, 218, 238, 0.7)) !important;
+  box-shadow: 0 -5px 20px rgba(34, 87, 125, 0.08), inset 0 1px rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(18px) saturate(1.25);
+}
+
+.dark footer.vista-footer {
+  border-top-color: rgba(185, 225, 255, 0.2) !important;
+  background: linear-gradient(180deg, rgba(16, 51, 79, 0.82), rgba(6, 25, 44, 0.9)) !important;
+}
+
+.dark input,
+.dark select,
+.dark button[class*="border-slate"],
+.dark button[class*="border-gray"] {
+  border-color: rgba(157, 202, 232, 0.3);
+  background-color: rgba(9, 34, 56, 0.72);
+  color: #e7f5ff;
+}
+
 /* Avoid a white flash while switching between light and dark themes. */
 html.theme-changing,
 html.theme-changing *,
 html.theme-changing *::before,
 html.theme-changing *::after {
   transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }

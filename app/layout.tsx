@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Laptop Upgrade Checker | Check RAM & SSD Upgrades",
@@ -25,7 +22,7 @@ const themeScript = `
 
       document.documentElement.classList.toggle("dark", isDark);
       document.documentElement.style.colorScheme = isDark ? "dark" : "light";
-      document.documentElement.style.backgroundColor = isDark ? "#020617" : "#f9fafb";
+      document.documentElement.style.backgroundColor = isDark ? "#061b33" : "#b9e5f5";
     } catch (e) {}
   })();
 `;
@@ -46,7 +43,7 @@ export default function RootLayout({
       </head>
 
       <body
-        className={`${inter.className} flex min-h-screen flex-col bg-gray-50 text-gray-900 antialiased dark:bg-slate-950 dark:text-slate-100`}
+        className="vista-font flex min-h-screen flex-col bg-gray-50 text-gray-900 antialiased dark:bg-slate-950 dark:text-slate-100"
       >
         <Navbar />
 
