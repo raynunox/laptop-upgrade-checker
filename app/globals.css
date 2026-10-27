@@ -11,6 +11,10 @@
   --vista-glass: rgba(239, 249, 255, 0.76);
 }
 
+.vista-font {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
 /* The layered blue-green desktop glow is the visual foundation of the Aero theme. */
 html,
 body {
