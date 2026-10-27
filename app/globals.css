@@ -97,6 +97,70 @@ a:hover .vista-orb {
   box-shadow: 0 0 0 3px rgba(64, 163, 219, 0.35), 0 5px 14px rgba(17, 70, 110, 0.46), inset 0 1px 3px #fff;
 }
 
+
+.vista-nav-link {
+  border: 1px solid transparent;
+  border-radius: 0.7rem;
+  padding: 0.55rem 0.8rem;
+  color: #244b6b;
+  font-size: 0.875rem;
+  font-weight: 650;
+  transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.vista-nav-link:hover,
+.vista-nav-link:focus-visible {
+  border-color: rgba(255, 255, 255, 0.92);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(174, 220, 243, 0.52));
+  box-shadow: 0 2px 7px rgba(33, 92, 132, 0.14), inset 0 1px #fff;
+}
+
+.dark .vista-nav-link {
+  color: #d6eeff;
+}
+
+.dark .vista-nav-link:hover,
+.dark .vista-nav-link:focus-visible {
+  border-color: rgba(185, 225, 255, 0.22);
+  background: linear-gradient(180deg, rgba(83, 143, 183, 0.32), rgba(25, 70, 102, 0.35));
+  box-shadow: inset 0 1px rgba(235, 249, 255, 0.12);
+}
+
+.vista-mobile-menu {
+  border-top-color: rgba(255, 255, 255, 0.78) !important;
+  background: rgba(226, 244, 253, 0.88) !important;
+  backdrop-filter: blur(20px);
+}
+
+.dark .vista-mobile-menu {
+  border-top-color: rgba(185, 225, 255, 0.22) !important;
+  background: rgba(8, 31, 53, 0.94) !important;
+}
+
+.vista-mobile-link {
+  display: block;
+  border: 1px solid transparent;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: #244b6b;
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+
+.vista-mobile-link:hover {
+  border-color: rgba(255, 255, 255, 0.9);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(174, 220, 243, 0.48));
+}
+
+.dark .vista-mobile-link {
+  color: #d6eeff;
+}
+
+.dark .vista-mobile-link:hover {
+  border-color: rgba(185, 225, 255, 0.2);
+  background: rgba(66, 120, 157, 0.28);
+}
+
 /* Rounded cards become translucent glass panes with the characteristic bright rim. */
 [class*="rounded-2xl"][class*="bg-white"],
 [class*="rounded-3xl"][class*="bg-white"],
