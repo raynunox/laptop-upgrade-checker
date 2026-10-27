@@ -824,14 +824,14 @@ export const laptops: Laptop[] = [
       {
         id: "default",
         label: "Standard Configuration",
-        memory: { status: "yes", type: "LPDDR5", formFactor: "Soldered", onboardGb: 16, slots: 0, maxTotalGb: 16, evidence: { sourceIds: ["lenovo-t14-g4-amd"] } },
+        memory: { status: "no", type: "LPDDR5x", formFactor: "Soldered", onboardGb: 16, slots: 0, maxTotalGb: 16, evidence: { sourceIds: ["lenovo-t14-g4-amd"] } },
         storage: { status: "yes", physicalSlots: 1, options: [{ formFactor: "M.2 2280", interface: "PCIe Gen 4 NVMe", maxCapacityGb: 2000, replaceable: "yes", evidence: { sourceIds: ["lenovo-t14-g4-amd"] } }], evidence: { sourceIds: ["lenovo-t14-g4-amd"] } },
         battery: { status: "yes", replaceable: true, capacityWh: 52, evidence: { sourceIds: ["lenovo-t14-g4-amd"] } },
         notes: "RAM is soldered, not upgradeable",
         evidence: { sourceIds: ["lenovo-t14-g4-amd"] },
       },
     ],
-    sources: [{ id: "lenovo-t14-g4-amd", title: "Lenovo ThinkPad T14 Gen 4 AMD", url: "https://psref.lenovo.com/", type: "official_specs", publisher: "Lenovo", accessedAt: "2024-01-15" }],
+    sources: [{ id: "lenovo-t14-g4-amd", title: "Lenovo ThinkPad T14 Gen 4 AMD PSREF Specification", url: "https://psref.lenovo.com/syspool/Sys/PDF/ThinkPad/ThinkPad_T14_Gen_4_AMD/ThinkPad_T14_Gen_4_AMD_Spec.PDF?v=c117ff71-688e-4257-a66f-6dc90ef5e0ed", type: "official_specs", publisher: "Lenovo", accessedAt: "2026-10-27" }],
     lastVerifiedAt: "2024-01-15",
   },
 
@@ -847,14 +847,14 @@ export const laptops: Laptop[] = [
       {
         id: "default",
         label: "Standard Configuration",
-        memory: { status: "yes", type: "LPDDR5X", formFactor: "Soldered", onboardGb: 16, slots: 0, maxTotalGb: 16, evidence: { sourceIds: ["lenovo-t14-g4-intel"] } },
+        memory: { status: "no", type: "LPDDR5X", formFactor: "Soldered", onboardGb: 16, slots: 0, maxTotalGb: 16, evidence: { sourceIds: ["lenovo-t14-g4-intel"] } },
         storage: { status: "yes", physicalSlots: 1, options: [{ formFactor: "M.2 2280", interface: "PCIe Gen 4 NVMe", maxCapacityGb: 2000, replaceable: "yes", evidence: { sourceIds: ["lenovo-t14-g4-intel"] } }], evidence: { sourceIds: ["lenovo-t14-g4-intel"] } },
         battery: { status: "yes", replaceable: true, capacityWh: 52, evidence: { sourceIds: ["lenovo-t14-g4-intel"] } },
         notes: "RAM is soldered, not upgradeable",
         evidence: { sourceIds: ["lenovo-t14-g4-intel"] },
       },
     ],
-    sources: [{ id: "lenovo-t14-g4-intel", title: "Lenovo ThinkPad T14 Gen 4 Intel", url: "https://psref.lenovo.com/", type: "official_specs", publisher: "Lenovo", accessedAt: "2024-01-15" }],
+    sources: [{ id: "lenovo-t14-g4-intel", title: "Lenovo ThinkPad T14 Gen 4 Intel PSREF Specification", url: "https://psref.lenovo.com/syspool/Sys/PDF/ThinkPad/ThinkPad_T14_Gen_4_Intel/ThinkPad_T14_Gen_4_Intel_Spec.PDF?v=98542290-caf1-433e-929b-9ed74f147a25", type: "official_specs", publisher: "Lenovo", accessedAt: "2026-10-27" }],
     lastVerifiedAt: "2024-01-15",
   },
 
