@@ -8,9 +8,18 @@ import Navbar from "../components/Navbar";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Laptop Upgrade Checker | Check RAM & SSD Upgrades",
+  metadataBase: new URL("https://laptop-upgrade-checker.vercel.app"),
+  title: "Laptop Upgrade Checker | RAM & SSD Compatibility",
   description:
-    "Check whether your laptop can be upgraded with more RAM or SSD storage. Search your laptop model and find documented upgrade limits and compatibility.",
+    "Check laptop RAM and SSD upgrade compatibility. Search your model to explore documented memory limits, SSD sizes, interfaces, and upgrade options.",
+  openGraph: {
+    title: "Laptop Upgrade Checker | RAM & SSD Compatibility",
+    description:
+      "Check laptop RAM and SSD upgrade compatibility using documented specifications.",
+    url: "https://laptop-upgrade-checker.vercel.app/",
+    siteName: "Laptop Upgrade Checker",
+    type: "website",
+  },
   verification: {
     google: "wSMx9XJV6Hrs6vRctIWcLN1mTDLhcoTxBtGbKcQonXw",
   },
