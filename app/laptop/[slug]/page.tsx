@@ -59,6 +59,9 @@ export async function generateMetadata({
   return {
     title: `${laptop.brand} ${laptop.model} RAM & SSD Upgrade Guide`,
     description: `Check RAM, SSD storage, battery, and hardware upgrade compatibility for the ${laptop.brand} ${laptop.model}.`,
+    alternates: {
+      canonical: `/laptop/${slug}`,
+    },
   };
 }
 
