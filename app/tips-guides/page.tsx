@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: "Laptop Tips & Guides | RAM, SSD & Upgrade Guides",
   description:
     "Practical laptop upgrade tips and guides covering RAM, SSD storage, compatibility, and laptop hardware upgrades.",
+  alternates: {
+    canonical: "/tips-guides",
+  },
 };
 
 export default function TipsGuidesPage() {
