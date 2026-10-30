@@ -148,8 +148,9 @@ export default function HomePage() {
               </h1>
 
               <p className="mx-auto mt-6 max-w-3xl text-base leading-7 text-slate-600 dark:text-slate-400 sm:text-lg">
-                Check whether your laptop can support more RAM, SSD storage,
-                and other hardware upgrades using documented specifications.
+                Use this free online laptop upgrade checker to see whether your
+                laptop supports more RAM, SSD storage, and other hardware
+                upgrades using documented specifications.
               </p>
             </div>
 
