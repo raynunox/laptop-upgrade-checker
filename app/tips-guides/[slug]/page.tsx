@@ -63,8 +63,64 @@ export default async function GuidePage({ params }: Props) {
     .map((relatedSlug) => getGuideBySlug(relatedSlug))
     .filter((item) => item !== undefined);
 
+  const siteUrl = "https://laptop-upgrade-checker.vercel.app";
+  const articleUrl = `${siteUrl}/tips-guides/${guide.slug}`;
+  const structuredData = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: guide.title,
+      description: guide.seoDescription,
+      articleSection: guide.category,
+      inLanguage: "en",
+      mainEntityOfPage: {
+        "@type": "WebPage",
+        "@id": articleUrl,
+      },
+      url: articleUrl,
+      publisher: {
+        "@type": "Organization",
+        name: "Laptop Upgrade Checker",
+        url: siteUrl,
+      },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: siteUrl,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Tips & Guides",
+          item: `${siteUrl}/tips-guides`,
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: guide.title,
+          item: articleUrl,
+        },
+      ],
+    },
+  ];
+
   return (
     <main className="min-h-screen bg-gray-50 px-4 py-12 text-gray-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100 sm:px-6 lg:px-8">
+      {structuredData.map((data, index) => (
+        <script
+          key={index}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(data).replace(/</g, "\\u003c"),
+          }}
+        />
+      ))}
       <article className="mx-auto max-w-3xl">
         <nav className="mb-8 text-sm text-gray-500 dark:text-slate-400">
           <Link href="/" className="hover:text-blue-600 dark:hover:text-blue-400">
