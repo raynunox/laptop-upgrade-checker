@@ -8,6 +8,24 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
+
+const contextualLinks: Record<string, Record<string, string[]>> = {
+  "how-much-ram-do-i-need": {
+    "Can every laptop be upgraded to more RAM?": ["can-i-upgrade-my-laptop-ram", "how-to-check-maximum-ram"],
+  },
+  "can-i-upgrade-my-laptop-ram": {
+    "3. Check your laptop's maximum RAM capacity": ["how-to-check-maximum-ram", "how-much-ram-do-i-need"],
+  },
+  "how-to-check-maximum-ram": {
+    "6. Confirm RAM compatibility before buying": ["can-i-upgrade-my-laptop-ram", "how-much-ram-do-i-need"],
+  },
+  "ram-vs-ssd": {
+    "Should you upgrade RAM or SSD first?": ["how-much-ram-do-i-need", "can-i-upgrade-my-laptop-ram"],
+    "Check compatibility before buying an upgrade": ["can-i-upgrade-my-laptop-ram", "how-to-check-maximum-ram"],
+  },
+};
+
+
 export function generateStaticParams() {
   return guides.map((guide) => ({
     slug: guide.slug,
@@ -103,6 +121,27 @@ export default async function GuidePage({ params }: Props) {
                   {paragraph}
                 </p>
               ))}
+
+              {contextualLinks[guide.slug]?.[section.heading] && (
+                <p className="mt-4 text-sm leading-7 text-gray-600 dark:text-slate-400">
+                  Related reading:{" "}
+                  {contextualLinks[guide.slug][section.heading].map((relatedSlug, linkIndex) => {
+                    const relatedGuide = getGuideBySlug(relatedSlug);
+                    if (!relatedGuide) return null;
+                    return (
+                      <span key={relatedSlug}>
+                        {linkIndex > 0 ? " · " : ""}
+                        <Link
+                          href={`/tips-guides/${relatedGuide.slug}`}
+                          className="font-semibold text-blue-600 underline decoration-blue-300 underline-offset-4 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                        >
+                          {relatedGuide.title}
+                        </Link>
+                      </span>
+                    );
+                  })}
+                </p>
+              )}
 
               {section.bullets && (
                 <ul className="mt-4 list-disc space-y-2 pl-6 leading-7 text-gray-600 dark:text-slate-400">
