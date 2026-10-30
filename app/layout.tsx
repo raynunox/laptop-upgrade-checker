@@ -4,11 +4,12 @@ import Script from "next/script";
 import "./globals.css";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
+import { SITE_URL } from "../lib/site";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://laptop-upgrade-checker.vercel.app"),
+  metadataBase: new URL(SITE_URL),
   title: "Laptop Upgrade Checker | RAM & SSD Compatibility",
   description:
     "Check laptop RAM and SSD upgrade compatibility. Search your model to explore documented memory limits, SSD sizes, interfaces, and upgrade options.",
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
     title: "Laptop Upgrade Checker | RAM & SSD Compatibility",
     description:
       "Check laptop RAM and SSD upgrade compatibility using documented specifications.",
-    url: "https://laptop-upgrade-checker.vercel.app/",
+    url: SITE_URL,
     siteName: "Laptop Upgrade Checker",
     type: "website",
   },
