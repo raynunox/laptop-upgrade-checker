@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SITE_URL } from "../../lib/site";
 
 export const metadata: Metadata = {
   title: "Laptop SSD & RAM Upgrade Compatibility Checker",
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
     title: "Laptop SSD & RAM Upgrade Compatibility Checker",
     description:
       "Check laptop RAM and SSD compatibility using documented specifications before choosing an upgrade.",
-    url: "https://laptop-upgrade-checker.vercel.app/checker",
+    url: `${SITE_URL}/checker`,
     siteName: "Laptop Upgrade Checker",
     type: "website",
   },

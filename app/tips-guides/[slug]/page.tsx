@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { guides, getGuideBySlug } from "@/data/guides";
+import { SITE_URL } from "../../../lib/site";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -63,8 +64,8 @@ export default async function GuidePage({ params }: Props) {
     .map((relatedSlug) => getGuideBySlug(relatedSlug))
     .filter((item) => item !== undefined);
 
-  const siteUrl = "https://laptop-upgrade-checker.vercel.app";
-  const articleUrl = `${siteUrl}/tips-guides/${guide.slug}`;
+  const siteUrl = SITE_URL;
+  const articleUrl = `${SITE_URL}/tips-guides/${guide.slug}`;
   const structuredData = [
     {
       "@context": "https://schema.org",

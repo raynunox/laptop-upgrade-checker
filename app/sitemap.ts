@@ -1,9 +1,7 @@
-
 import type { MetadataRoute } from "next";
 import { supabase } from "../lib/supabase";
 import { guides } from "../data/guides";
-
-const baseUrl = "https://laptop-upgrade-checker.vercel.app";
+import { SITE_URL } from "../lib/site";
 
 function slugify(value: string) {
   return value
@@ -14,41 +12,24 @@ function slugify(value: string) {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const { data: laptops, error } = await supabase
-    .from("laptops")
-    .select("brand, model, last_verified_at");
-
   const staticPages: MetadataRoute.Sitemap = [
-    {
-      url: baseUrl,
-      lastModified: new Date(),
-    },
-    {
-      url: `${baseUrl}/checker`,
-      lastModified: new Date(),
-    },
-    {
-      url: `${baseUrl}/tips-guides`,
-      lastModified: new Date(),
-    },
-    {
-      url: `${baseUrl}/about`,
-      lastModified: new Date(),
-    },
-    {
-      url: `${baseUrl}/contact`,
-      lastModified: new Date(),
-    },
-    {
-      url: `${baseUrl}/privacy`,
-      lastModified: new Date(),
-    },
+    { url: SITE_URL, changeFrequency: "weekly", priority: 1 },
+    { url: `${SITE_URL}/checker`, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${SITE_URL}/tips-guides`, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${SITE_URL}/about`, changeFrequency: "monthly", priority: 0.4 },
+    { url: `${SITE_URL}/contact`, changeFrequency: "monthly", priority: 0.3 },
+    { url: `${SITE_URL}/privacy`, changeFrequency: "yearly", priority: 0.2 },
   ];
 
   const guidePages: MetadataRoute.Sitemap = guides.map((guide) => ({
-    url: `${baseUrl}/tips-guides/${guide.slug}`,
-    lastModified: new Date(),
+    url: `${SITE_URL}/tips-guides/${guide.slug}`,
+    changeFrequency: "monthly",
+    priority: 0.7,
   }));
+
+  const { data: laptops, error } = await supabase
+    .from("laptops")
+    .select("brand, model, last_verified_at");
 
   if (error || !laptops) {
     console.error("Error fetching laptops for sitemap:", error);
@@ -56,10 +37,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   const laptopPages: MetadataRoute.Sitemap = laptops.map((laptop) => ({
-    url: `${baseUrl}/laptop/${slugify(`${laptop.brand}-${laptop.model}`)}`,
-    lastModified: laptop.last_verified_at
-      ? new Date(laptop.last_verified_at)
-      : new Date(),
+    url: `${SITE_URL}/laptop/${slugify(`${laptop.brand}-${laptop.model}`)}`,
+    ...(laptop.last_verified_at
+      ? { lastModified: new Date(laptop.last_verified_at) }
+      : {}),
+    changeFrequency: "monthly",
+    priority: 0.6,
   }));
 
   return [...staticPages, ...guidePages, ...laptopPages];
